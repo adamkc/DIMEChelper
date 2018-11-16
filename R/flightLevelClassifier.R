@@ -1,33 +1,54 @@
-#' Title
+#' Flight Level Classifier
 #'
 #' @param flightDir Directory of the chips to classify
 #' @param modelName Model version to import for classification
 #' @param exportResults Logical of whether you want the export the classificaiton results to the "Model Output" directory
 #' @param returnPlotData Logical of whether you want to return the plotData classification data.
+#' @param classes Vector of class names.
 #'
-#' @return
+#' @return Returns either a data.frame of classifications, or outputs it to a plotData.csv file, or both.
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #'
+#' modelName <- "M14"
+#' model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, paste0("ModelFile-",modelName,".h5")))
+#' classes <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+#'
+#'
+#' ###### Dos Rios Flight
+#' setwd("F:/Adam Cummings/GoogleImagery/ca_dosrios_20170813")
+#' dirList <- fs::dir_ls("Chips",recursive = FALSE) ##160 directories
+#' flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C07_R02-DosRios2016")],
+#'                       modelName=modelName,
+#'                       exportResults = TRUE,
+#'                       returnPlotData = FALSE,
+#'                       classes=classes)
+#'
+#' sapply(dirList,flightLevelClassifier,
+#'        modelName,
+#'        exportResults = TRUE,
+#'        returnPlotData = FALSE)
+#'}
 #'
 
 
 flightLevelClassifier <- function(flightDir=dirList[1],
                                   modelName=modelName,
                                   exportResults=TRUE,
-                                  returnPlotData=FALSE){
-  #source("F:/Adam Cummings/DimecV1/RScripts/Functions.R")
-  print(flightDir)
-  if(length(list.dirs(flightDir))==1) return(print(paste0("Make sure there is an Unclassified Dir at ", flightDir, ".")))
+                                  returnPlotData=FALSE,
+                                  classes=classes){
+    print(flightDir)
+  if(length(list.dirs(flightDir))==1) stop(paste0("Make sure there is an Unclassified Dir at ", flightDir, "."))
 
-  filesToClassify <- list.files(flightDir,recursive = TRUE,pattern = "*.jpg")
-  filesToClassifyLoc <- list.files(flightDir,recursive = TRUE,pattern = "*.jpg",full.names = TRUE)
+  filesToClassifyLoc <- fs::dir_ls(flightDir,recursive = TRUE,glob = "*.jpg")
+  filesToClassify <- basename(filesToClassifyLoc)
   testSamples <- length(filesToClassify)
 
-  flightName <- strsplit(flightDir,"/")[[1]][2]
-  outputDir <- paste0("Model Output/",flightName,"/",modelName)
-  if(dir.exists(outputDir)) return(print(paste0(flightName, " is already analyzed with ", modelName, ".")))
+  flightName <- basename(flightDir)
+  outputDir <- file.path("Model Output",flightName,modelName)
+  if(dir.exists(outputDir) & exportResults) stop(paste0(flightName, " is already analyzed with ", modelName, "."))
 
 
   test_generator <- keras::flow_images_from_directory(
@@ -97,4 +118,24 @@ flightLevelClassifier <- function(flightDir=dirList[1],
   if(returnPlotData) return(plotData)
 }
 
+
+
+# modelName <- "M14"
+# model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, paste0("ModelFile-",modelName,".h5")))
+# classes <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+#
+#
+# ###### Dos Rios Flight
+# setwd("F:/Adam Cummings/GoogleImagery/ca_dosrios_20170813")
+# dirList <- fs::dir_ls("Chips",recursive = FALSE) ##160 directories
+# flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C01_R01-DosRios2016")],
+#                       modelName=modelName,
+#                       exportResults = FALSE,
+#                       returnPlotData = FALSE,
+#                       classes=classes)
+#
+# sapply(dirList,flightLevelClassifier,
+#        modelName,
+#        exportResults = TRUE,
+#        returnPlotData = FALSE)
 

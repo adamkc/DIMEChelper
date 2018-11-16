@@ -17,5 +17,6 @@ kmlMaker(kmlExportData = plotData, filename = "exportedkml",
 \item{layerName}{layer name within the kml file}
 }
 \description{
-This function exports a kml into the designated directory
+This function exports a kml into the designated directory.  It converts a data.frame of model predictions and lat-long values into a geospatial file
+that can be loaded into Google Earth.
 }

@@ -10,6 +10,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' flightMetricTally(modelName="M14")
+#' }
 
 
 flightMetricTally <- function(flightDir="Model Output",
@@ -17,7 +20,7 @@ flightMetricTally <- function(flightDir="Model Output",
                               outputDir="Model Summary Output",
                               fileName = "MetricTally.csv"){
   #csvList <- list.files(flightDir,recursive=TRUE,pattern="*.csv",full.name=TRUE)
-  dir_create(file.path(outputDir,modelName))
+  fs::dir_create(file.path(outputDir,modelName))
   csvList <- fs::dir_ls(path = flightDir,recursive = TRUE,glob = "*.csv")
   csvList <- csvList[grep(csvList,pattern = modelName)]
 
@@ -47,4 +50,4 @@ flightMetricTally <- function(flightDir="Model Output",
 
 }
 
-flightMetricTally(modelName="M14")
+
