@@ -8,7 +8,13 @@ flightLevelClassifier(flightDir = dirList[1], modelName = modelName,
   exportResults = TRUE, returnPlotData = FALSE)
 }
 \arguments{
-\item{returnPlotData}{}
+\item{flightDir}{Directory of the chips to classify}
+
+\item{modelName}{Model version to import for classification}
+
+\item{exportResults}{Logical of whether you want the export the classificaiton results to the "Model Output" directory}
+
+\item{returnPlotData}{Logical of whether you want to return the plotData classification data.}
 }
 \description{
 Title

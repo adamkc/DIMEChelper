@@ -1,9 +1,9 @@
 #' Title
 #'
-#' @param flightDir
-#' @param modelName
-#' @param exportResults
-#' @param returnPlotData
+#' @param flightDir Directory of the chips to classify
+#' @param modelName Model version to import for classification
+#' @param exportResults Logical of whether you want the export the classificaiton results to the "Model Output" directory
+#' @param returnPlotData Logical of whether you want to return the plotData classification data.
 #'
 #' @return
 #' @export
@@ -17,7 +17,7 @@ flightLevelClassifier <- function(flightDir=dirList[1],
                                   modelName=modelName,
                                   exportResults=TRUE,
                                   returnPlotData=FALSE){
-  source("F:/Adam Cummings/DimecV1/RScripts/Functions.R")
+  #source("F:/Adam Cummings/DimecV1/RScripts/Functions.R")
   print(flightDir)
   if(length(list.dirs(flightDir))==1) return(print(paste0("Make sure there is an Unclassified Dir at ", flightDir, ".")))
 
@@ -30,7 +30,7 @@ flightLevelClassifier <- function(flightDir=dirList[1],
   if(dir.exists(outputDir)) return(print(paste0(flightName, " is already analyzed with ", modelName, ".")))
 
 
-  test_generator <- flow_images_from_directory(
+  test_generator <- keras::flow_images_from_directory(
     flightDir, #Test folder
     target_size = c(299, 299),
     color_mode = "rgb",
@@ -39,7 +39,7 @@ flightLevelClassifier <- function(flightDir=dirList[1],
     shuffle = FALSE,
     seed = 123)
 
-  preds <- predict_generator(model,
+  preds <- keras::predict_generator(model,
                              test_generator,
                              verbose = 1,
                              steps = testSamples,

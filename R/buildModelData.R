@@ -6,6 +6,7 @@
 #' @param trainpercent Percent of data to add to the training dataset. These three need to add to 1.
 #' @param validatepercent Percent of data to add to the validation dataset. These three need to add to 1.
 #' @param testpercent Percent of data to add to the test dataset. These three need to add to 1.
+#' @param balanceData logical of whether you'd like to balance the training data based on the class with the fewest examples
 #'
 #' @return
 #' @export

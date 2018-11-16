@@ -11,7 +11,17 @@
   filterRate = 0.8, fileLabel = "Region")
 }
 \arguments{
-\item{fileLabel}{}
+\item{flightDir}{Directory of model output to merge for export}
+
+\item{modelName}{Particular model version output to target}
+
+\item{class}{Class name to compile}
+
+\item{outputDir}{Target directory for export}
+
+\item{filterRate}{Threshold value to filter the classifications by.}
+
+\item{fileLabel}{Additional name modifier for exported kml file.}
 }
 \description{
 Title

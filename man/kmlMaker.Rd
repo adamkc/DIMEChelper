@@ -10,7 +10,11 @@ kmlMaker(kmlExportData = plotData, filename = "exportedkml",
 \arguments{
 \item{kmlExportData}{Requires columns named Latitude and Longitude in the epsg:4326 projection.  all other columns added to popup bubble of kml points.}
 
-\item{layerName}{}
+\item{filename}{Name of the new kml file that is generated}
+
+\item{exportDir}{Directory to export the kml file}
+
+\item{layerName}{layer name within the kml file}
 }
 \description{
 This function exports a kml into the designated directory

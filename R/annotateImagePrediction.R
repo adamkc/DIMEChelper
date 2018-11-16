@@ -1,8 +1,8 @@
 #' Image Annotation
 #'
-#' @param plotDataOne
-#' @param loc
-#' @param outputDir
+#' @param plotDataOne A single line to annotate from a plotData file
+#' @param imageDir Location of images to annotate
+#' @param outputDir Target directory for new images
 #'
 #' @return
 #' @export
@@ -12,10 +12,10 @@
 
 
 annotateImagePrediction <- function(plotDataOne=plotData[1,],
-                                    loc=positiveLoc,
+                                    imageDir=positiveLoc,
                                     outputDir=paste0(outputDir,"/","PositiveImages")){
   if(!dir.exists(outputDir)) dir.create(outputDir)
-  img <- jpeg::readJPEG(paste0(loc,"/",plotDataOne$Image))
+  img <- jpeg::readJPEG(paste0(imageDir,"/",plotDataOne$Image))
   g <- grid::rasterGrob(img)
   plot <- plotDataOne %>% gather(Var,Val,1:length(classes)) %>%
     .[order(.$Val,decreasing=TRUE),] %>%

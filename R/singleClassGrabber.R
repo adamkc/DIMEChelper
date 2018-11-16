@@ -1,16 +1,19 @@
 #' Title
 #'
-#' @param flightDir
-#' @param modelName
-#' @param class
-#' @param outputDir
-#' @param filterRate
-#' @param fileLabel
+#' @param flightDir Directory of model output to merge for export
+#' @param modelName Particular model version output to target
+#' @param class Class name to compile
+#' @param outputDir Target directory for export
+#' @param filterRate Threshold value to filter the classifications by.
+#' @param fileLabel Additional name modifier for exported kml file.
 #'
 #' @return
 #' @export
 #'
 #' @examples
+
+
+
 singleClassGrabber <- function(flightDir="F:/Adam Cummings/GoogleImagery/ca_hayfork_20160529_4096mosaics/Model Output",
                                modelName="M7",
                                class="PrivateGrow",

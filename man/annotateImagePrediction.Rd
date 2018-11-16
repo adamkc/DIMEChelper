@@ -4,11 +4,16 @@
 \alias{annotateImagePrediction}
 \title{Image Annotation}
 \usage{
-annotateImagePrediction(plotDataOne = plotData[1, ], loc = positiveLoc,
-  outputDir = paste0(outputDir, "/", "PositiveImages"))
+annotateImagePrediction(plotDataOne = plotData[1, ],
+  imageDir = positiveLoc, outputDir = paste0(outputDir, "/",
+  "PositiveImages"))
 }
 \arguments{
-\item{outputDir}{}
+\item{plotDataOne}{A single line to annotate from a plotData file}
+
+\item{imageDir}{Location of images to annotate}
+
+\item{outputDir}{Target directory for new images}
 }
 \description{
 Image Annotation

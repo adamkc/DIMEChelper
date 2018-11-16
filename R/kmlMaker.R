@@ -8,21 +8,23 @@ library(plotKML)
 #' This function exports a kml into the designated directory
 #'
 #' @param kmlExportData Requires columns named Latitude and Longitude in the epsg:4326 projection.  all other columns added to popup bubble of kml points.
-#' @param filename
-#' @param exportDir
-#' @param layerName
+#' @param filename Name of the new kml file that is generated
+#' @param exportDir Directory to export the kml file
+#' @param layerName layer name within the kml file
 #'
 #' @return
 #' @export
 #'
 #' @examples
+
+
 kmlMaker <- function(kmlExportData=plotData,
                      filename="exportedkml",
                      exportDir=getwd(),
                      layerName="ModelOutput"){
   kmlExportData[, !names(kmlExportData) %in% c("Longitude","Latitude")] %<>% mutate_if(is.numeric,round,3)
-  coordinates(kmlExportData) <- c("Longitude","Latitude")
-  proj4string(kmlExportData)<- CRS("+init=epsg:4326")
+  sp::coordinates(kmlExportData) <- c("Longitude","Latitude")
+  sp::proj4string(kmlExportData)<- sp::CRS("+init=epsg:4326")
 
 
   fileNumber <- 1
@@ -32,9 +34,10 @@ kmlMaker <- function(kmlExportData=plotData,
   }
 
   suppressWarnings(
-    writeOGR(kmlExportData, dsn=paste0(exportDir,"/",filename,".kml"),
-             layer= layerName,
-             driver="KML"))
+    rgdal::writeOGR(kmlExportData,
+                    dsn=paste0(exportDir,"/",filename,".kml"),
+                    layer= layerName,
+                    driver="KML"))
 
 
   ##Old Method:
