@@ -5,7 +5,8 @@ library(plotKML)
 
 #' KML exporter
 #'
-#' This function exports a kml into the designated directory
+#' This function exports a kml into the designated directory.  It converts a data.frame of model predictions and lat-long values into a geospatial file
+#' that can be loaded into Google Earth.
 #'
 #' @param kmlExportData Requires columns named Latitude and Longitude in the epsg:4326 projection.  all other columns added to popup bubble of kml points.
 #' @param filename Name of the new kml file that is generated

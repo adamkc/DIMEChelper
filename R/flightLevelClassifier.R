@@ -72,20 +72,20 @@ flightLevelClassifier <- function(flightDir=dirList[1],
     kmlSubset <- plotData %>% subset(TrespassHoles >0.20 | TrespassPlants >0.20)
     kmlSubset2 <- plotData %>% subset(Model_Prediction == "TrespassPlants" | Model_Prediction == "TrespassHoles")
 
-    kmlmaker(plotData,
+    kmlMaker(plotData,
              filename = paste0(flightName,"-FULL-",modelName),
              exportDir = outputDir,
              layerName = paste0("TotalExport--",modelName))
 
     if(nrow(kmlSubset) > 0){
-      kmlmaker(kmlSubset,
+      kmlMaker(kmlSubset,
                filename = paste0(flightName,"-",modelName),
                exportDir = outputDir,
                layerName = paste0("HighProbPoints--",modelName))
     }
 
     if(nrow(kmlSubset2) > 0){
-      kmlmaker(kmlSubset2,
+      kmlMaker(kmlSubset2,
                filename = paste0(flightName,"-TrespassPredicted-",modelName),
                exportDir = outputDir,
                layerName = paste0("TrespassPredicted--",modelName))

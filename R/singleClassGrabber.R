@@ -32,7 +32,7 @@ singleClassGrabber <- function(flightDir="F:/Adam Cummings/GoogleImagery/ca_hayf
   classList2 <- classList %>% do.call(what = rbind)
   if(nrow(classList2) == 0) return("No points match criteria")
   fileName = paste0(fileLabel,"_",modelName, "_",class,"_",gsub(pattern = "\\.",replacement = "_",filterRate))
-  kmlmaker(kmlExportData = classList2,
+  kmlMaker(kmlExportData = classList2,
            filename = fileName,
            exportDir = outputDir,
            layerName = class)
