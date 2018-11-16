@@ -16,13 +16,16 @@ flightMetricTally <- function(flightDir="Model Output",
                               modelName="M14",
                               outputDir="Model Summary Output",
                               fileName = "MetricTally.csv"){
-  csvList <- list.files(flightDir,recursive=TRUE,pattern="*.csv",full.name=TRUE)
+  #csvList <- list.files(flightDir,recursive=TRUE,pattern="*.csv",full.name=TRUE)
+  dir_create(file.path(outputDir,modelName))
+  csvList <- fs::dir_ls(path = flightDir,recursive = TRUE,glob = "*.csv")
   csvList <- csvList[grep(csvList,pattern = modelName)]
 
   dataFrameGenerator <- function(x) {
     temp <- read.csv(x)
     nclasses <- which(names(temp) == "Image")-1
     temp$evidenceRatio <- temp$TrespassTotal / apply(temp[,2:nclasses],1,sum)
+    totalChips <- nrow(temp)
     modelPred <- (temp$Model_Prediction == "TrespassPlants" | temp$Model_Prediction == "TrespassHoles") %>% sum()
     threshold0.2 <- (temp$TrespassPlants >0.2 | temp$TrespassHoles > 0.2) %>% sum()
     threshold0.4 <- (temp$TrespassPlants >0.5 | temp$TrespassHoles > 0.5) %>% sum()
@@ -30,6 +33,7 @@ flightMetricTally <- function(flightDir="Model Output",
     thresholdEvidence0.7 <- (temp$evidenceRatio > 0.7) %>% sum()
     quadName <- basename(dirname(dirname(x))) ##peel off "plotData.csv" and modelDir and then grab the Tile dir name
     result <- data.frame(Quad=quadName,
+                         nChips = totalChips,
                          ModelPredictions = modelPred,
                          lowerThreshold=threshold0.2,
                          upperThreshold=threshold0.4,
