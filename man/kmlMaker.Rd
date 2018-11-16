@@ -13,5 +13,5 @@ kmlMaker(kmlExportData = plotData, filename = "exportedkml",
 \item{layerName}{}
 }
 \description{
-KML exporter
+This function exports a kml into the designated directory
 }

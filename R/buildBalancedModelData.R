@@ -1,5 +1,10 @@
 
-#' Title
+#' Build Balanced Model Data
+#'
+#' This function takes a starting folder "Original" and splits the classes within that folder
+#' into Training, Validation, and Testing data.  The data is balanced so that the smallest
+#' class dictates how much training data is added for each class.  The remainders are added to
+#' the validation dataset.
 #'
 #' @param data.folder
 #' @param trainpercent

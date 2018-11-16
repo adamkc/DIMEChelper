@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildBalancedModelData.R
 \name{buildBalancedModelData}
 \alias{buildBalancedModelData}
-\title{Title}
+\title{Build Balanced Model Data}
 \usage{
 buildBalancedModelData(data.folder, trainpercent = 0.8,
   validatepercent = 0.1, testpercent = 0.1)
@@ -11,7 +11,10 @@ buildBalancedModelData(data.folder, trainpercent = 0.8,
 \item{testpercent}{}
 }
 \description{
-Title
+This function takes a starting folder "Original" and splits the classes within that folder
+into Training, Validation, and Testing data.  The data is balanced so that the smallest
+class dictates how much training data is added for each class.  The remainders are added to
+the validation dataset.
 }
 \examples{
 

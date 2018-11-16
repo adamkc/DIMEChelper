@@ -12,6 +12,7 @@ buildModelData(data.folder = getwd(), trainpercent = 0.85,
 }
 \description{
 Create train, validation and training data from a pool of original class sorted data
+This function creates a "Model Data" folder and necessary subfolders with and populated them with
 }
 \examples{
 \dontrun{

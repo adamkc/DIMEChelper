@@ -5,13 +5,15 @@ library(plotKML)
 
 #' KML exporter
 #'
+#' This function exports a kml into the designated directory
+#'
 #' @param kmlExportData Requires columns named Latitude and Longitude in the epsg:4326 projection.  all other columns added to popup bubble of kml points.
 #' @param filename
 #' @param exportDir
 #' @param layerName
 #'
 #' @return
-#' @export kmlfile This function exports a kml into the designated directory
+#' @export
 #'
 #' @examples
 kmlMaker <- function(kmlExportData=plotData,

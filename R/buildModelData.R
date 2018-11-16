@@ -1,14 +1,14 @@
 #' Build Model Data
 #'
 #' @description Create train, validation and training data from a pool of original class sorted data
-#'
+#' This function creates a "Model Data" folder and necessary subfolders with and populated them with
 #' @param data.folder
 #' @param trainpercent
 #' @param validatepercent
 #' @param testpercent
 #'
 #' @return
-#' @export Folder This function creates a "Model Data" folder and necessary subfolders with and populated them with
+#' @export
 #'
 #'
 #' @examples
