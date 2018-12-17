@@ -71,7 +71,7 @@ flightLevelClassifier <- function(flightDir=dirList[1],
   plotData <- data.frame(preds)
   names(plotData) <- classes
 
-  plotData %<>%
+  plotData <- plotData %>%
     mutate(Image = filesToClassify,
            #Actual_Class = substr(testfilenames,6,10),
            Model_Prediction = classes[apply(.,1,which.max)])

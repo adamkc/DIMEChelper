@@ -4,15 +4,11 @@
 \alias{retile}
 \title{Title}
 \usage{
-retile(imageDir = getwd(), inputFolder = "Mosiacs", imageName,
-  red = 1, green = 2, blue = 3, dim = 299, overlap = 60,
-  outputFolder = "Tiles")
+retile(imageName, flightName = "ca_hayfork_20160529_rgb", red = 1,
+  green = 2, blue = 3, dim = 299, overlap = 60,
+  outputFolder = "Chips")
 }
 \arguments{
-\item{imageDir}{Folder for current operations}
-
-\item{inputFolder}{Folder location of tiff file}
-
 \item{imageName}{Name of tiff file to chip.}
 
 \item{red}{Dimension number for red band}
@@ -26,6 +22,10 @@ retile(imageDir = getwd(), inputFolder = "Mosiacs", imageName,
 \item{overlap}{number of pixels to overlap the chips}
 
 \item{outputFolder}{location that new chips are copied}
+
+\item{imageDir}{Folder for current operations}
+
+\item{inputFolder}{Folder location of tiff file}
 }
 \description{
 Title
@@ -33,18 +33,14 @@ Title
 \examples{
 \dontrun{
 ###List of Tiffs to Crop:-----------------------------------------------
-files <- list.files("F:/Adam Cummings/GoogleImagery/ShastaT/Mosaics",recursive=FALSE)
+files <- list.files("G:/GoogleImagery/Purchase2/Mosaics",recursive=TRUE,pattern="*.tif",full.names = TRUE)
 files <- files[grep(pattern = "gold",x = files)]
 
 ###Crop one tiff:--------------------------------------------
-retile("F:/Adam Cummings/GoogleImagery/ShastaT",
-       imageName = files[2],
-       dim=299,overlap=60,outputFolder="Chips",inputFolder="Mosaics")
+retile(imageName = files[1],dim=299,overlap=60,outputFolder="Chips")
 
 ###Crop a list of tiffs:-------------------------------------------
-sapply(files,FUN=retile,
-       imageDir = "G:/ShastaT Search/ca_arcata_20160527",
-       dim=299,overlap=60,outputFolder="Chips",inputFolder="Mosaics")
+sapply(files,FUN=retile,outputFolder="Chips")
 
 }
 }

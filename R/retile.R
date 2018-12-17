@@ -16,18 +16,14 @@
 #' @examples
 #' \dontrun{
 #' ###List of Tiffs to Crop:-----------------------------------------------
-#' files <- list.files("F:/Adam Cummings/GoogleImagery/ShastaT/Mosaics",recursive=FALSE)
+#' files <- list.files("G:/GoogleImagery/Purchase2/Mosaics",recursive=TRUE,pattern="*.tif",full.names = TRUE)
 #' files <- files[grep(pattern = "gold",x = files)]
 #'
 #' ###Crop one tiff:--------------------------------------------
-#' retile("F:/Adam Cummings/GoogleImagery/ShastaT",
-#'        imageName = files[2],
-#'        dim=299,overlap=60,outputFolder="Chips",inputFolder="Mosaics")
+#' retile(imageName = files[1],dim=299,overlap=60,outputFolder="Chips")
 #'
 #' ###Crop a list of tiffs:-------------------------------------------
-#' sapply(files,FUN=retile,
-#'        imageDir = "G:/ShastaT Search/ca_arcata_20160527",
-#'        dim=299,overlap=60,outputFolder="Chips",inputFolder="Mosaics")
+#' sapply(files,FUN=retile,outputFolder="Chips")
 #'
 #' }
 
@@ -38,23 +34,24 @@
 # library(jpeg)
 
 
-retile <- function(imageDir = getwd(),
-                   inputFolder="Mosiacs",
-                   imageName,
+retile <- function(imageName,
+                   flightName="ca_hayfork_20160529_rgb",
                    red=1,green=2,blue=3,
                    dim=299,overlap=60,
-                   outputFolder="Tiles"){
+                   outputFolder="Chips"){
   #This takes a raster of the class SpatialGridDataFrame and converts
-  #it into jpg tiles of the specified dimensions and overlap. Band color order can be
+  #it into jpg chips of the specified dimensions and overlap. Band color order can be
   #specified with arguments
 
   ## Create Output folder if necessary
-  csvName <- substr(imageName,start = 1,stop = nchar(imageName)-4)
-  outputFolder <- paste0(imageDir,"/",outputFolder,"/",csvName,"/Unclassified")
-  if (dir.exists(outputFolder)) return(print(paste0(imageName, " is already clipped."))) ##Bail early to avoid redundant work
+  csvName <- substr(basename(imageName),start = 1,stop = nchar(basename(imageName))-4)
+  outputFolderFull <- file.path(outputFolder,flightName,csvName,"Unclassified")
+  if (dir.exists(outputFolderFull)) return(print(paste0(imageName, " is already clipped."))) ##Bail early to avoid redundant work
+  if (!dir.exists(outputFolder)) return(print(paste0("outputFolder '", outputFolder, "' doesnt exist.  Setwd to correct Dir?."))) ##Bail early to avoid redundant work
+  if(!file.exists(imageName)) return(print(paste0("Cannot locate file ",imageName)))
 
-  dir.create(outputFolder, recursive=TRUE)
-  image = rgdal::readGDAL(paste0(imageDir,"/",inputFolder,"/",imageName))
+  dir.create(outputFolderFull, recursive=TRUE)
+  image = rgdal::readGDAL(imageName)
   ## Extract variables from SpatialGridDataFrame
   pixelrows <- image@grid@cells.dim[2]
   pixelcols <-image@grid@cells.dim[1]
@@ -62,14 +59,18 @@ retile <- function(imageDir = getwd(),
   startLat <- image@bbox[2,2]
   startLong <- image@bbox[1,1]
   cellsize <- image@grid@cellsize[1]
+  rm(image)
   ##df$col <- rep(1:pixelcols,times = pixelrows)  This labeling helped error check.
   ##df$row <- rep(1:pixelrows,each = pixelcols)
 
-  b1 <-  matrix(df[,red],nrow = pixelrows,byrow = TRUE)
-  b2 <-  matrix(df[,green], nrow = pixelrows,byrow = TRUE)
-  b3 <-  matrix(df[,blue], nrow = pixelrows,byrow = TRUE)
-  m <-  array(c(b1,b2,b3),dim=c(pixelrows,pixelcols,3))
-
+  # b1 <-  matrix(df[,red],nrow = pixelrows,byrow = TRUE)
+  # b2 <-  matrix(df[,green], nrow = pixelrows,byrow = TRUE)
+  # b3 <-  matrix(df[,blue], nrow = pixelrows,byrow = TRUE)
+  m <-  array(c(matrix(df[,red],nrow = pixelrows,byrow = TRUE),
+                matrix(df[,green], nrow = pixelrows,byrow = TRUE),
+                matrix(df[,blue], nrow = pixelrows,byrow = TRUE)),
+              dim=c(pixelrows,pixelcols,3))
+  rm(df)
   ## Calculate number of images to be generated:
   nimagerows <- ceiling(pixelrows / (dim-overlap))
   nimagecols <- ceiling(pixelcols / (dim-overlap))
@@ -84,15 +85,19 @@ retile <- function(imageDir = getwd(),
       rowstart <- (((r-1)*dim)+1) - ((r-1)*overlap)
       rowend <- rowstart+dim -1
       if(rowend > pixelrows){ ##If at edge, set back from edge.
-        rows <- (pixelrows-dim+1):pixelrows} else {
-          rows <- rowstart:rowend}
+        rows <- (pixelrows-dim+1):pixelrows
+      } else {
+        rows <- rowstart:rowend
+      }
 
 
       colstart <- (((c-1)*dim)+1) - ((c-1)*overlap)
       colend <- colstart+dim -1
       if(colend > pixelcols){ ##If at edge, set back from edge.
-        cols <- (pixelcols-dim+1):pixelcols} else {
-          cols <- colstart:colend}
+        cols <- (pixelcols-dim+1):pixelcols
+      } else {
+        cols <- colstart:colend
+      }
 
       #Smear crops near edge so all output identical size:
       #rows[rows > pixelrows] <- pixelrows
@@ -100,22 +105,25 @@ retile <- function(imageDir = getwd(),
 
       output <- m[rows,cols,c(1:3)]
 
-      if(mean(output) != 0){  ##Only print and update if image has contents
+      proportionBlack <- sum(output==0)/(dim*dim*3)
+
+      if(proportionBlack <0.20){  ##Only print and update if image has little edge
         ##
-        output <- output/max(output)
-        tileLat <- startLat - (round(mean(rows)) * cellsize)
-        tileLong <- startLong + (round(mean(cols)) * cellsize)
+        #output <- output/max(output)  #This is the old method that was used for all of the First purchase. Why?
+        output <- output/256  #Isn't this a more reliable way to scale between 0 and 1?
+        chipLat <- startLat - (round(mean(rows)) * cellsize)
+        chipLong <- startLong + (round(mean(cols)) * cellsize)
         ##
-        tilename <- paste0(csvName,"_", round(tileLong,5),"_",round(tileLat,5),".jpg")
-        filename <- paste0(outputFolder,"/",tilename)
-        jpeg::writeJPEG(output, target = filename,quality=0.95)
+        chipName <- paste0(csvName,"_", round(chipLat,5),"_",round(chipLong,5),".jpg")
+        fileName <- paste0(outputFolderFull,"/",chipName)
+        jpeg::writeJPEG(output, target = fileName,quality=0.95)
         ##GridKey:
-        temp <- data.frame(Row=r,Col=c,File=tilename, Lat=tileLat,Long=tileLong)
+        temp <- data.frame(Row=r,Col=c,File=chipName, Lat=chipLat,Long=chipLong)
         gridkey <- rbind(gridkey,temp)
       }
     }
-    csvName <- substr(imageName,start = 1,stop = nchar(imageName)-4)
-    write.csv(gridkey,file = paste0(csvName,"_TileKey.csv"),row.names = FALSE)
+    #csvName <- substr(imageName,start = 1,stop = nchar(imageName)-4)
+    write.csv(gridkey,file = paste0(csvName,"_ChipKey.csv"),row.names = FALSE)
   }
 
 }

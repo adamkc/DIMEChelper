@@ -8,7 +8,10 @@ filenameExtractor(filelist = kmlTiles$Image)
 }
 \arguments{
 \item{filelist}{a vector of filenames that you want to extract lat long values from. Similar to this:
-or_goldbeach_20160703--Set2_-123.521_41.94.jpg}
+purchase1: or_goldbeach_20160703--Set2_-123.521_41.94.jpg
+purchase2: "C01_R01-Hayfork2016_41.1684_-123.5119.jpg"
+I flipped lat and long so they can be pasted into google earth easily but now
+two different extraction codes are necessary..}
 }
 \description{
 Filename Extractor
