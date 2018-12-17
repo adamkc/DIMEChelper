@@ -38,7 +38,7 @@ flightLevelClassifier <- function(flightDir=dirList[1],
                                   modelName=modelName,
                                   exportResults=TRUE,
                                   returnPlotData=FALSE,
-                                  classes=classes){
+                                  classes=classnames){
     print(flightDir)
   if(length(list.dirs(flightDir))==1) stop(paste0("Make sure there is an Unclassified Dir at ", flightDir, "."))
 
@@ -46,8 +46,9 @@ flightLevelClassifier <- function(flightDir=dirList[1],
   filesToClassify <- basename(filesToClassifyLoc)
   testSamples <- length(filesToClassify)
 
-  flightName <- basename(flightDir)
-  outputDir <- file.path("Model Output",flightName,modelName)
+  flightName <- basename(dirname(flightDir))
+  tileName <- basename(flightDir)
+  outputDir <- file.path("Model Output",flightName,tileName,modelName)
   if(dir.exists(outputDir) & exportResults) stop(paste0(flightName, " is already analyzed with ", modelName, "."))
 
 
@@ -67,18 +68,17 @@ flightLevelClassifier <- function(flightDir=dirList[1],
                              max_queue_size = 1,
                              workers=4)
 
+  plotData <- setNames(data.frame(preds),classes)
 
-  plotData <- data.frame(preds)
-  names(plotData) <- classes
-
-  plotData <- plotData %>%
-    mutate(Image = filesToClassify,
-           #Actual_Class = substr(testfilenames,6,10),
-           Model_Prediction = classes[apply(.,1,which.max)])
+  plotData$Image <- filesToClassify
+  plotData$Model_Prediction = classes[apply(plotData[,1:length(classes)],1,which.max)]
   plotData$TrespassTotal <- plotData$TrespassHoles + plotData$TrespassPlants
+
   ##OUTPUT
   if(exportResults){
+
     latLong <- filenameExtractor(as.character(plotData$Image))
+
     plotData <- cbind(plotData,latLong[,c(2,3)])
 
 
@@ -90,8 +90,8 @@ flightLevelClassifier <- function(flightDir=dirList[1],
 
     ###KML;
 
-    kmlSubset <- plotData %>% subset(TrespassHoles >0.20 | TrespassPlants >0.20)
-    kmlSubset2 <- plotData %>% subset(Model_Prediction == "TrespassPlants" | Model_Prediction == "TrespassHoles")
+    kmlSubset <-  subset(plotData,TrespassHoles >0.20 | TrespassPlants >0.20)
+    kmlSubset2 <- subset(plotData, Model_Prediction == "TrespassPlants" | Model_Prediction == "TrespassHoles")
 
     kmlMaker(plotData,
              filename = paste0(flightName,"-FULL-",modelName),
@@ -122,7 +122,7 @@ flightLevelClassifier <- function(flightDir=dirList[1],
 
 # modelName <- "M14"
 # model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, paste0("ModelFile-",modelName,".h5")))
-# classes <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+# classnames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
 #
 #
 # ###### Dos Rios Flight

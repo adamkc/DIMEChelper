@@ -23,7 +23,7 @@ kmlMaker <- function(kmlExportData=plotData,
                      filename="exportedkml",
                      exportDir=getwd(),
                      layerName="ModelOutput"){
-  kmlExportData[, !names(kmlExportData) %in% c("Longitude","Latitude")] %<>% mutate_if(is.numeric,round,3)
+  kmlExportData[, !names(kmlExportData) %in% c("Longitude","Latitude")] %<>% dplyr::mutate_if(is.numeric,round,3)
   sp::coordinates(kmlExportData) <- c("Longitude","Latitude")
   sp::proj4string(kmlExportData)<- sp::CRS("+init=epsg:4326")
 

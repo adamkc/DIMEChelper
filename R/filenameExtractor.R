@@ -17,18 +17,18 @@ filenameExtractor <- function(filelist = kmlTiles$Image){
     .[,ncol(.)] %>% substr(1,nchar(.)-4) %>%
     strsplit("_") %>% unlist() %>%
     matrix(nrow=length(filelist),byrow=TRUE)
-  output <- data.frame(Name = filelist,
+  if(ncol(temp)>1) return(data.frame(Name = filelist,
                        Longitude = -as.numeric(temp[,1]),
-                       Latitude = as.numeric(temp[,2]))
-  if(length(output>1)) return(output)
+                       Latitude = as.numeric(temp[,2])))
+
+
   #Purchase2 Filenames:
   temp <- filelist %>% strsplit("_") %>% unlist %>%
     matrix(nrow=(length(filelist)),byrow = TRUE) %>%
     .[,c(3,4)]
-  temp[1] <- as.numeric(temp[1])
-  temp[2] <- temp[2] %>% substr(1,nchar(.)-4) %>% as.numeric()
+  temp[,2] <- temp[,2] %>% substr(1,nchar(.)-4)
   output <- data.frame(Name = filelist,
-                       Longitude = -as.numeric(temp[,2]),
+                       Longitude = as.numeric(temp[,2]),
                        Latitude = as.numeric(temp[,1]))
   return(output)
 }
