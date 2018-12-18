@@ -39,7 +39,7 @@ mosaicer <- function(NOTBUILTASFUNCTIONYET){
   outputDir = "G:/GoogleImagery/Purchase2/Mosaics/"
   #outputDir = "C:/Users/IERC Staff/Desktop/New Folder (2)/" #Test Directory
 
-  flightName = "ca_hayfork_20160529_rgb"
+  flightName = "ca_arcata_20160527_rgb"
   #####
   dir.create(file.path(outputDir,flightName))
   inputFlight = file.path(InputDir,flightName)

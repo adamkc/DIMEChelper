@@ -39,7 +39,7 @@ retile <- function(imageName,
                    red=1,green=2,blue=3,
                    dim=299,overlap=60,
                    outputFolder="Chips",
-                   ouputJPG = TRUE,
+                   outputJPG = TRUE,
                    returnData = FALSE){
   #This takes a raster of the class SpatialGridDataFrame and converts
   #it into jpg chips of the specified dimensions and overlap. Band color order can be
@@ -132,5 +132,8 @@ retile <- function(imageName,
     #csvName <- substr(imageName,start = 1,stop = nchar(imageName)-4)
     write.csv(gridkey,file = paste0(csvName,"_ChipKey.csv"),row.names = FALSE)
   }
-  if(returnData) return(imageList)
+  if(returnData){
+    imageList <- imageList[[which(!sapply(FUN = is.null,imageList))]]
+    return(imageList)
+  }
 }
