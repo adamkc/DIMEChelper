@@ -38,7 +38,9 @@ retile <- function(imageName,
                    flightName="ca_hayfork_20160529_rgb",
                    red=1,green=2,blue=3,
                    dim=299,overlap=60,
-                   outputFolder="Chips"){
+                   outputFolder="Chips",
+                   ouputJPG = TRUE,
+                   returnData = FALSE){
   #This takes a raster of the class SpatialGridDataFrame and converts
   #it into jpg chips of the specified dimensions and overlap. Band color order can be
   #specified with arguments
@@ -79,6 +81,7 @@ retile <- function(imageName,
 
   ## Generate and export images:
   gridkey <- data.frame(Row=NULL,Col=NULL,File=NULL, Lat=NULL,Long=NULL)
+  if(returnData) imageList <- list()
   for(r in 1:nimagerows){
     for(c in 1:nimagecols){
       ##Determine location of current crop:
@@ -116,7 +119,11 @@ retile <- function(imageName,
         ##
         chipName <- paste0(csvName,"_", round(chipLat,5),"_",round(chipLong,5),".jpg")
         fileName <- paste0(outputFolderFull,"/",chipName)
-        jpeg::writeJPEG(output, target = fileName,quality=0.95)
+        if (outputJPG) jpeg::writeJPEG(output, target = fileName,quality=0.95)
+        if (returnData){
+          imageNumber <- ((r-1)*nimagecols) + c
+          imageList[[imageNumber]] <- output
+        }
         ##GridKey:
         temp <- data.frame(Row=r,Col=c,File=chipName, Lat=chipLat,Long=chipLong)
         gridkey <- rbind(gridkey,temp)
@@ -125,5 +132,5 @@ retile <- function(imageName,
     #csvName <- substr(imageName,start = 1,stop = nchar(imageName)-4)
     write.csv(gridkey,file = paste0(csvName,"_ChipKey.csv"),row.names = FALSE)
   }
-
+  if(returnData) return(imageList)
 }
