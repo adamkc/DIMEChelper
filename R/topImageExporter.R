@@ -22,9 +22,9 @@ topImageExporter <- function(plotData,
 
   topimages <- temp$Image
 
-  dir.create(paste0(exportdir,"/",class),recursive = TRUE)
-  file.copy(paste0(unclassifieddir,"/",topimages),
-            paste0(exportdir,"/",class,"/"))
+  dir.create(file.path(exportdir,class),recursive = TRUE)
+  file.copy(file.path(unclassifieddir,"Unclassified",topimages),
+            file.path(exportdir,class))
   #file.rename(from = paste0(exportdir,"/",class,"/",topimages),
   #            to = paste0(exportdir,class,"/",topnewname,".jpg") )
 
