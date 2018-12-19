@@ -6,7 +6,7 @@
 \usage{
 retile(imageName, flightName = "ca_hayfork_20160529_rgb", red = 1,
   green = 2, blue = 3, dim = 299, overlap = 60,
-  outputFolder = "Chips")
+  outputFolder = "Chips", outputJPG = TRUE, returnData = FALSE)
 }
 \arguments{
 \item{imageName}{Name of tiff file to chip.}

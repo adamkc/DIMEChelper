@@ -5,10 +5,10 @@ library(rgdal)
 
 
 flightGridKML <- function(rasterDir){
-  rasterList <- list.files("rasterDir",full.names=TRUE,pattern="*.tif")
+  rasterList <- list.files(rasterDir,full.names=TRUE,pattern="*.tif")
   x <- raster::raster(rasterList[1])
   e <- raster::extent(x)
-  p <- sp::as.SpatialPolygons(e)
+  p <- as(e,"SpatialPolygons")
 
   for(i in 2:length(rasterList)){
     xtemp <- raster(rasterList[i])
@@ -24,11 +24,9 @@ flightGridKML <- function(rasterDir){
   writeOGR(p.df,"flightgrid.kml",layer="grid",driver="KML")
 
 
-  r <- x > -Inf
-
-  pp <- rasterToPolygons(r, dissolve=TRUE)
-
-  plot(x)
-  plot(plwd=5,border="red",add=TRUE)
+  # r <- x > -Inf
+  # pp <- rasterToPolygons(r, dissolve=TRUE)
+  # plot(x)
+  # plot(plwd=5,border="red",add=TRUE)
 
 }

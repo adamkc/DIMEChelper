@@ -81,7 +81,7 @@ mosaicer <- function(NOTBUILTASFUNCTIONYET){
 
   #write.csv(GeoData2, "C:/Users/IERC Staff/Desktop/Output.csv")
   #####End Extent processing
-
+  flightLabel <- "-Arcata2016"
 
   ##Create mosiacs:
   for(col in 1:nCols){
@@ -90,7 +90,7 @@ mosaicer <- function(NOTBUILTASFUNCTIONYET){
       print(paste0("Row: ",r))
       files <- GeoData2[GeoData2$colLab == col & GeoData2$rowLab == r,"File_Name" ]
       if(length(files)>0){
-        mosaicName <-    paste0("C",stringr::str_pad(col,2,pad = "0"),"_R", stringr::str_pad(r,2,pad = "0"), "-Hayfork2016.tif")
+        mosaicName <-    paste0("C",stringr::str_pad(col,2,pad = "0"),"_R", stringr::str_pad(r,2,pad = "0"), flightLabel,".tif")
         if (!file.exists(mosaicName)){
           suppressMessages( mosaic_rasters(gdalfile=files,dst_dataset = file.path(outputDir,flightName,mosaicName)) )
         }

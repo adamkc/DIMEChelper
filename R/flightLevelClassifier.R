@@ -12,22 +12,22 @@
 #' @examples
 #' \dontrun{
 #'
-#' modelName <- "M14"
+#' modelLabel <- "M14"
 #' model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, paste0("ModelFile-",modelName,".h5")))
-#' classes <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+#' classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
 #'
 #'
 #' ###### Dos Rios Flight
 #' setwd("F:/Adam Cummings/GoogleImagery/ca_dosrios_20170813")
 #' dirList <- fs::dir_ls("Chips",recursive = FALSE) ##160 directories
 #' flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C07_R02-DosRios2016")],
-#'                       modelName=modelName,
+#'                       modelName=modelLabel,
 #'                       exportResults = TRUE,
 #'                       returnPlotData = FALSE,
 #'                       classes=classes)
 #'
 #' sapply(dirList,flightLevelClassifier,
-#'        modelName,
+#'        modelLabel,
 #'        exportResults = TRUE,
 #'        returnPlotData = FALSE)
 #'}
@@ -35,10 +35,10 @@
 
 
 flightLevelClassifier <- function(flightDir=dirList[1],
-                                  modelName=modelName,
+                                  modelName=modelLabel,
                                   exportResults=TRUE,
                                   returnPlotData=FALSE,
-                                  classes=classnames){
+                                  classes=classNames){
     print(flightDir)
   if(length(list.dirs(flightDir))==1) stop(paste0("Make sure there is an Unclassified Dir at ", flightDir, "."))
 
@@ -120,22 +120,22 @@ flightLevelClassifier <- function(flightDir=dirList[1],
 
 
 
-# modelName <- "M14"
+# modelLabel <- "M14"
 # model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, paste0("ModelFile-",modelName,".h5")))
-# classnames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+# classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
 #
 #
 # ###### Dos Rios Flight
 # setwd("F:/Adam Cummings/GoogleImagery/ca_dosrios_20170813")
 # dirList <- fs::dir_ls("Chips",recursive = FALSE) ##160 directories
 # flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C01_R01-DosRios2016")],
-#                       modelName=modelName,
+#                       modelName=modelLabel,
 #                       exportResults = FALSE,
 #                       returnPlotData = FALSE,
 #                       classes=classes)
 #
 # sapply(dirList,flightLevelClassifier,
-#        modelName,
+#        modelLabel,
 #        exportResults = TRUE,
 #        returnPlotData = FALSE)
 

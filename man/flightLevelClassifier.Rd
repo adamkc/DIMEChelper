@@ -5,7 +5,7 @@
 \title{Flight Level Classifier}
 \usage{
 flightLevelClassifier(flightDir = dirList[1], modelName = modelName,
-  exportResults = TRUE, returnPlotData = FALSE, classes = classes)
+  exportResults = TRUE, returnPlotData = FALSE, classes = classnames)
 }
 \arguments{
 \item{flightDir}{Directory of the chips to classify}
