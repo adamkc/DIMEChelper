@@ -39,7 +39,7 @@ mosaicer <- function(NOTBUILTASFUNCTIONYET){
   outputDir = "G:/GoogleImagery/Purchase2/Mosaics/"
   #outputDir = "C:/Users/IERC Staff/Desktop/New Folder (2)/" #Test Directory
 
-  flightName = "ca_arcata_20160527_rgb"
+  flightName = "or_medford_20170708_rgb"
   #####
   dir.create(file.path(outputDir,flightName))
   inputFlight = file.path(InputDir,flightName)
@@ -68,20 +68,20 @@ mosaicer <- function(NOTBUILTASFUNCTIONYET){
   rowLabs <- rep(nRows:1,each=5)
 
   colKey <- table(GeoData$XMin[order(GeoData$XMin)]) %>%
-    data.frame %>% mutate(colLab = colLabs[1:nrow(.)]) %>%
+    data.frame %>% dplyr::mutate(colLab = colLabs[1:nrow(.)]) %>%
     .[,-2] %>% rename(XMin = Var1) %>% mutate(XMin = as.numeric(levels(XMin))[XMin])
   rowKey <- table(GeoData$YMin[order(GeoData$YMin,decreasing = TRUE)]) %>%
-    data.frame %>% mutate(rowLab = rowLabs[1:nrow(.)]) %>%
+    data.frame %>% dplyr::mutate(rowLab = rowLabs[1:nrow(.)]) %>%
     .[,-2] %>% rename(YMin = Var1) %>% mutate(YMin = as.numeric(levels(YMin))[YMin])
 
-  GeoData2 <- GeoData %>% left_join(colKey) %>% left_join(rowKey)
+  GeoData2 <- GeoData %>% dplyr::left_join(colKey) %>% dplyr::left_join(rowKey)
   table(GeoData2$rowLab,GeoData2$colLab)
 
 
 
   #write.csv(GeoData2, "C:/Users/IERC Staff/Desktop/Output.csv")
   #####End Extent processing
-  flightLabel <- "-Arcata2016"
+  flightLabel <- "-Medford2017"
 
   ##Create mosiacs:
   for(col in 1:nCols){

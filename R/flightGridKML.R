@@ -5,6 +5,7 @@ library(rgdal)
 
 
 flightGridKML <- function(rasterDir){
+  if(!dir.exists(rasterDir)) stop("Directory doesn't exist")
   rasterList <- list.files(rasterDir,full.names=TRUE,pattern="*.tif")
   x <- raster::raster(rasterList[1])
   e <- raster::extent(x)
