@@ -17,13 +17,14 @@
 #' \dontrun{
 #' ###List of Tiffs to Crop:-----------------------------------------------
 #' files <- list.files("G:/GoogleImagery/Purchase2/Mosaics",recursive=TRUE,pattern="*.tif",full.names = TRUE)
-#' files <- files[grep(pattern = "gold",x = files)]
+#' files <- files[grep(pattern = "crescentcity2015",x = files)]
 #'
 #' ###Crop one tiff:--------------------------------------------
 #' retile(imageName = files[1],dim=299,overlap=60,outputFolder="Chips")
 #'
 #' ###Crop a list of tiffs:-------------------------------------------
-#' sapply(files,FUN=retile,outputFolder="Chips")
+#' setwd("G:/GoogleImagery/Purchase2")
+#' sapply(files,FUN=retile,outputFolder="Chips",flightName = "ca_crescentcity_20150715_rgb")
 #'
 #' }
 

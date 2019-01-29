@@ -29,3 +29,4 @@ topImageExporter <- function(plotData,
   #            to = paste0(exportdir,class,"/",topnewname,".jpg") )
 
 }
+

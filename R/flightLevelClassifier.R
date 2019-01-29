@@ -13,7 +13,7 @@
 #' \dontrun{
 #'
 #' modelLabel <- "M14"
-#' model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, paste0("ModelFile-",modelName,".h5")))
+#' model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelLabel, paste0("ModelFile-",modelLabel,".h5")))
 #' classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
 #'
 #'
@@ -119,13 +119,13 @@ flightLevelClassifier <- function(flightDir=dirList[1],
 }
 
 
-
-# modelLabel <- "M7"
+#
+# modelLabel <- "M16"
 # model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelLabel, paste0("ModelFile-",modelLabel,".h5")))
 # classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelLabel, "classes.txt"))[,1]
 #
 #
-###### Dos Rios Flight
+# ##### Dos Rios Flight
 # setwd("F:/Adam Cummings/GoogleImagery/ca_dosrios_20170813")
 # dirList <- fs::dir_ls("Chips",recursive = FALSE) ##160 directories
 # flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C01_R07")],
@@ -142,14 +142,11 @@ flightLevelClassifier <- function(flightDir=dirList[1],
 #
 # ###### Purchase2
 # setwd("G:/GoogleImagery/Purchase2")
-# dirList <- fs::dir_ls("Chips/or_goldbeach_20160703_rgb",recursive = FALSE) ##160 directories
+# dirList <- fs::dir_ls("Chips/ca_hayfork_20160529_rgb",recursive = FALSE) ##160 directories
 # flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C05_R02")],
 #                       modelName=modelLabel,
 #                       exportResults = TRUE,
 #                       returnPlotData = FALSE,
 #                       classes=classNames)
 #
-# sapply(dirList,flightLevelClassifier,
-#        modelLabel,
-#        exportResults = TRUE,
-#        returnPlotData = FALSE)
+# sapply(dirList,flightLevelClassifier,modelLabel,exportResults = TRUE, returnPlotData = FALSE)

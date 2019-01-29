@@ -22,7 +22,7 @@ buildModelData <- function(data.folder = getwd(),
                            testpercent = 0.00,
                            balanceData = FALSE){
 
-  if((trainpercent + validationpercent + testpercent) != 1)
+  if((trainpercent + validatepercent + testpercent) != 1)
     return("Error: numbers don't add to 1")
 
   #Generate folders:

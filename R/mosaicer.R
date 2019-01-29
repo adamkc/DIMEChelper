@@ -39,7 +39,7 @@ mosaicer <- function(NOTBUILTASFUNCTIONYET){
   outputDir = "G:/GoogleImagery/Purchase2/Mosaics/"
   #outputDir = "C:/Users/IERC Staff/Desktop/New Folder (2)/" #Test Directory
 
-  flightName = "or_medford_20170708_rgb"
+  flightName = "ca_crescentcity_20150715_rgb"
   #####
   dir.create(file.path(outputDir,flightName))
   inputFlight = file.path(InputDir,flightName)
@@ -81,7 +81,7 @@ mosaicer <- function(NOTBUILTASFUNCTIONYET){
 
   #write.csv(GeoData2, "C:/Users/IERC Staff/Desktop/Output.csv")
   #####End Extent processing
-  flightLabel <- "-Medford2017"
+  flightLabel <- "-crescentcity2015"
 
   ##Create mosiacs:
   for(col in 1:nCols){
