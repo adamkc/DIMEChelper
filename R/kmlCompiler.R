@@ -61,31 +61,46 @@ kmlCompiler <- function(homeDir = getwd(),
   ## Merge files?:
   if(mergeKMLs){
     ## Read Files:
-    rawDataFiles <- list.files(file.path(homeDir,"Model Output",flightName),
+    rawDataLocs <- list.files(file.path(homeDir,"Model Output",flightName),
                           recursive=TRUE,
                           pattern="plotData.csv",
                           full.names=TRUE)
-    rawDataFiles <- rawDataFiles[grep(pattern=modelName,x = rawDataFiles)]
-    plotDataAll <- pbapply::pblapply(X = rawDataFiles, function(x){
-      temp <- read.csv(x)
-      temp
-    })
+    rawDataLocs <- rawDataLocs[grep(pattern=modelName,x = rawDataLocs)]
+
+    plotDataTop <- list()
+    plotDataPred <- list()
+
+    readAndSubset <- function() {
+      pb <- pbapply::startpb(0, length(rawDataLocs))
+      on.exit(pbapply::closepb(pb))
+
+      for(i in 1:length(rawDataLocs)){
+        temp <- read.csv(rawDataLocs[i])
+        plotDataTop[[i]] <<- temp[temp$TrespassTotal > 0.2,]
+        plotDataPred[[i]] <<-temp[temp$Model_Prediction == "TrespassHoles" |
+                                    temp$Model_Prediction == "TrespassPlants", ]
+        pbapply::setpb(pb, i)
+      }
+
+      plotDataTop <<- do.call(what = rbind,plotDataTop)
+      plotDataPred <<- do.call(what = rbind,plotDataPred)
+      invisible(NULL)
+    }
+
+    readAndSubset()
+
+    #plotDataAll <- pbapply::pblapply(rawDataLocs,read.csv)
 
     ## Combine and subset files:
-    plotDataAll <- do.call(what = rbind,plotDataAll)
 
-    plotDataTop <- plotDataAll[plotDataAll$TrespassTotal > 0.2,]
-    plotDataPred <- plotDataPred[plotDataPred$Model_Prediction ==
-                                   "TrespassHoles" |
-                                   plotDataPred$Model_Prediction ==
-                                   "TrespassPlants", ]
+
 
     ## Export Kmls:
     kmlMaker(kmlExportData = plotDataTop,
-             filename = "MergedThresholdPositives",
+             fileName = "MergedThresholdPositives",
              exportDir = exportDir)
-    kmlMaker(kmlExportData = plotDataTop,
-             filename = "MergedPredictionedPositives",
+    kmlMaker(kmlExportData = plotDataPred,
+             fileName = "MergedPredictionedPositives",
              exportDir = exportDir)
   }
 

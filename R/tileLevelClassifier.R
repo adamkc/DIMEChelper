@@ -14,6 +14,33 @@
 #'  plotData.csv, and two kml files, or both. Outputs to "getwd()/Model Output".
 #'   Optionally exports the results as a set of files in directories, including
 #'   positive images, kml's of positives, and the full model results
+#'
+#' @examples
+#' \dontrun{
+#'
+#' modelLabel <- "M17"
+#' model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files", modelLabel, paste0("ModelFile-",modelLabel,".h5")))
+#' classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+#'
+#'
+#' ###### Dos Rios Flight
+#' setwd("F:/Adam Cummings/GoogleImagery/FirstPurchase/")
+#' dirList <- list.dirs("Chips/ca_dosrios_20170813",recursive = FALSE,full.names=FALSE) ##160 directories
+#' tileLevelClassifier(flightName = "ca_dosrios_20170813",
+#'                      tileName = "C15_R01-DosRios2016",
+#'                       modelName=modelLabel,
+#'                       exportResults = TRUE,
+#'                       returnPlotData = FALSE,
+#'                       classes=classNames)
+#'
+#' sapply(dirList,tileLevelClassifier,
+#'        flightName = "ca_dosrios_20170813",
+#'        modelName=modelLabel,
+#'        exportResults = TRUE,
+#'        returnPlotData = FALSE,
+#'        classes=classNames)
+#'}
+#'
 #' @export
 tileLevelClassifier <- function(tileName,
                                 homeDir = getwd(),
@@ -23,6 +50,8 @@ tileLevelClassifier <- function(tileName,
                                 returnPlotData=FALSE,
                                 classes=classNames){
 
+  outputDir <- file.path(homeDir,"Model Output",flightName,tileName,modelName)
+  flightDir <- file.path(homeDir,"Chips",flightName,tileName)
   ##Problem Check:
   if(dir.exists(outputDir) & exportResults)
     return(print(paste0(file.path(flightName,tileName),
@@ -31,8 +60,7 @@ tileLevelClassifier <- function(tileName,
     stop(paste0("Make sure there is an Unclassified Dir at ", flightDir, "."))
 
 
-  outputDir <- file.path(homeDir,"Model Output",flightName,tileName,modelName)
-  flightDir <- file.path(homeDir,"Chips",flightName,tileName)
+
   print(file.path(flightName,tileName))
 
   filesToClassifyLoc <- fs::dir_ls(flightDir,recursive = TRUE,glob = "*.jpg")
@@ -92,20 +120,20 @@ tileLevelClassifier <- function(tileName,
                            Model_Prediction == "TrespassHoles")
 
     kmlMaker(plotData,
-             filename = paste0(flightName,"-FULL-",modelName),
+             fileName = paste0(flightName,"-FULL-",modelName),
              exportDir = outputDir,
              layerName = paste0("TotalExport--",modelName))
 
     if(nrow(kmlSubset) > 0){
       kmlMaker(kmlSubset,
-               filename = paste0(flightName,"-",modelName),
+               fileName = paste0(flightName,"-",modelName),
                exportDir = outputDir,
                layerName = paste0("HighProbPoints--",modelName))
     }
 
     if(nrow(kmlSubset2) > 0){
       kmlMaker(kmlSubset2,
-               filename = paste0(flightName,"-TrespassPredicted-",modelName),
+               fileName = paste0(flightName,"-TrespassPredicted-",modelName),
                exportDir = outputDir,
                layerName = paste0("TrespassPredicted--",modelName))
     }
@@ -116,28 +144,4 @@ tileLevelClassifier <- function(tileName,
   if(returnPlotData) return(plotData)
 }
 
-#' @examples
-#' \dontrun{
-#'
-#' modelLabel <- "M17"
-#' model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files", modelLabel, paste0("ModelFile-",modelLabel,".h5")))
-#' classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
-#'
-#'
-#' ###### Dos Rios Flight
-#' setwd("F:/Adam Cummings/GoogleImagery/FirstPurchase/")
-#' dirList <- list.dirs("Chips/ca_dosrios_20170813",recursive = FALSE,full.names=FALSE) ##160 directories
-#' tileLevelClassifier(flightName = "ca_dosrios_20170813",
-#'                      tileName = "C15_R01-DosRios2016",
-#'                       modelName=modelLabel,
-#'                       exportResults = TRUE,
-#'                       returnPlotData = FALSE,
-#'                       classes=classNames)
-#'
-#' sapply(dirList,tileLevelClassifier,
-#'        flightName = "ca_dosrios_20170813",
-#'        modelName=modelLabel,
-#'        exportResults = TRUE,
-#'        returnPlotData = FALSE,
-#'        classes=classNames)
-#'}
+
