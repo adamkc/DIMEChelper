@@ -4,24 +4,24 @@
 #' @param imageDir Location of images to annotate
 #' @param outputDir Target directory for new images
 #'
-#' @return
+#' @return The function exports the provided chips with neat bar graph of
+#' classification.
+#'
 #' @export
-#'
-#' @examples
-#'
-
-
 annotateImagePrediction <- function(plotDataOne=plotData[1,],
                                     imageDir=positiveLoc,
-                                    outputDir=paste0(outputDir,"/","PositiveImages")){
+                                    outputDir=file.path(outputDir,
+                                                        "PositiveImages")){
   if(!dir.exists(outputDir)) dir.create(outputDir)
   img <- jpeg::readJPEG(paste0(imageDir,"/",plotDataOne$Image))
   g <- grid::rasterGrob(img)
   plot <- plotDataOne %>% gather(Var,Val,1:length(classes)) %>%
     .[order(.$Val,decreasing=TRUE),] %>%
-    mutate(Val = round(Val,2),
+    dplyr::mutate(Val = round(Val,2),
            Var = factor(Var,levels=rev(Var)),
-           Trespass = (Var=="TrespassPlants" | Var == "TrespassHoles" | Var == "TrespassBushes")) %>%
+           Trespass = (Var=="TrespassPlants" |
+                         Var == "TrespassHoles" |
+                         Var == "TrespassBushes")) %>%
     .[1:3,] %>%
     ggplot(aes(x=Var,y=Val)) +
     geom_bar(stat="identity",aes(fill=Trespass)) +

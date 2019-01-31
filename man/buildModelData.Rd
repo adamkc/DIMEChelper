@@ -8,22 +8,33 @@ buildModelData(data.folder = getwd(), trainpercent = 0.85,
   validatepercent = 0.15, testpercent = 0, balanceData = FALSE)
 }
 \arguments{
-\item{data.folder}{Top directory that contains "Original" folder. "Model Data" will be added to this directory as well.}
+\item{data.folder}{Top directory that contains "Original" folder.
+"Model Data" will be added to this directory as well.}
 
-\item{trainpercent}{Percent of data to add to the training dataset. These three need to add to 1.}
+\item{trainpercent}{Percent of data to add to the training dataset. These
+three need to add to 1.}
 
-\item{validatepercent}{Percent of data to add to the validation dataset. These three need to add to 1.}
+\item{validatepercent}{Percent of data to add to the validation dataset.
+These three need to add to 1.}
 
-\item{testpercent}{Percent of data to add to the test dataset. These three need to add to 1.}
+\item{testpercent}{Percent of data to add to the test dataset. These three
+need to add to 1.}
 
-\item{balanceData}{logical of whether you'd like to balance the training data based on the class with the fewest examples}
+\item{balanceData}{logical of whether you'd like to balance the training
+data based on the class with the fewest examples}
+}
+\value{
+Produces a random dataset with training, testing, and validation sets
 }
 \description{
-Create train, validation and training data from a pool of original class sorted data
-This function creates a "Model Data" folder and necessary subfolders with and populated them with
+Create train, validation and training data from a pool of
+ original class sorted data
+This function creates a "Model Data" folder and necessary subfolders with
+ and populated them with
 }
 \examples{
 \dontrun{
 buildModelData("F:/Adam Cummings/DimecV1/Data")
 }
+
 }

@@ -1,41 +1,57 @@
 #' Flight Metric Tally
 #'
-#' @param flightDir Directory of multiple tile outputs
+#' @param homeDir Base Directory. Should have Model Output Directory.
 #' @param modelName DIMEC Model version to extract
-#' @param outputDir Target location for output
 #' @param fileName Output file name.  Be sure to add .csv to end.
+#' @param flightName Name of flight to summarize
+#' @param summariseKMLs Logical. If true, calls kmlCompiler to produce summary
+#'  kmls
 #'
-#' @return outputs a csv file that contains tallys of positive detections at different thresholds.
+#' @return fileName.csv This file summarises the predictions at each tile for an
+#' entire flight. The file contains several metrics of determining a "positive"
+#' but they all seem about equivalent just with lower or higher sensitivity.
 #'
-#' @export
+#' @return kmls optionally the function can export flight-level merged kmls
+#' by calling kmlCompiler
 #'
 #' @examples
 #' \dontrun{
-#' flightMetricTally(modelName="M14")
+#' flightMetricTally(modelName="M17",
+#'    flightName = "ca_dosrios_20170813")
 #' }
-
-
-flightMetricTally <- function(flightDir="Model Output",
+#'
+#' @export
+flightMetricTally <- function(homeDir= getwd(),
                               modelName="M14",
-                              outputDir="Model Summary Output",
-                              fileName = "MetricTally.csv"){
-  #csvList <- list.files(flightDir,recursive=TRUE,pattern="*.csv",full.name=TRUE)
-  fs::dir_create(file.path(outputDir,modelName))
-  csvList <- fs::dir_ls(path = flightDir,recursive = TRUE,glob = "*.csv")
+                              flightName,
+                              fileName = "MetricTally.csv",
+                              summariseKMLs=FALSE){
+  ##Create outputDir:
+  outputDir <- file.path(homeDir, "Model Output Summary",
+                       flightName, modelName)
+  dir.create(outputDir, recursive=TRUE, showWarnings = FALSE)
+
+  ##CSV List:
+  csvList <- fs::dir_ls(path = file.path(homeDir,flightName),
+                        recursive = TRUE, glob = "*.csv")
   csvList <- csvList[grep(csvList,pattern = modelName)]
 
+  ##This function reads the plotData csvs and summarises each one using a
+  ##number of different thresholds
   dataFrameGenerator <- function(x) {
     temp <- read.csv(x)
     nclasses <- which(names(temp) == "Image")-1
     temp$evidenceRatio <- temp$TrespassTotal / apply(temp[,2:nclasses],1,sum)
     totalChips <- nrow(temp)
-    modelPred <- (temp$Model_Prediction == "TrespassPlants" | temp$Model_Prediction == "TrespassHoles") %>% sum()
-    threshold0.2 <- (temp$TrespassPlants >0.2 | temp$TrespassHoles > 0.2) %>% sum()
-    threshold0.4 <- (temp$TrespassPlants >0.5 | temp$TrespassHoles > 0.5) %>% sum()
-    thresholdEvidence0.5 <- (temp$evidenceRatio > 0.5) %>% sum()
-    thresholdEvidence0.7 <- (temp$evidenceRatio > 0.7) %>% sum()
-    quadName <- basename(dirname(dirname(x))) ##peel off "plotData.csv" and modelDir and then grab the Tile dir name
-    result <- data.frame(Quad=quadName,
+    modelPred <- sum((temp$Model_Prediction == "TrespassPlants" |
+                        temp$Model_Prediction == "TrespassHoles"))
+    threshold0.2 <- sum((temp$TrespassPlants >0.2 | temp$TrespassHoles > 0.2))
+    threshold0.4 <- sum((temp$TrespassPlants >0.5 | temp$TrespassHoles > 0.5))
+    thresholdEvidence0.5 <- sum((temp$evidenceRatio > 0.5))
+    thresholdEvidence0.7 <- sum((temp$evidenceRatio > 0.7))
+    ##peel off "plotData.csv" and modelDir and then grab the Tile dir name
+    tileName <- basename(dirname(dirname(x)))
+    result <- data.frame(Tile=tileName,
                          nChips = totalChips,
                          ModelPredictions = modelPred,
                          lowerThreshold=threshold0.2,
@@ -44,10 +60,16 @@ flightMetricTally <- function(flightDir="Model Output",
                          upperThresholdEvidence=thresholdEvidence0.7)
     return(result)
   }
-  quadData <-pbapply::pblapply(X = csvList,dataFrameGenerator)
-  quadData2 <- quadData %>% do.call(what = rbind)
-  write.csv(x = quadData2,file = file.path(outputDir,modelName,fileName),row.names = FALSE)
-
+  tileData <-pbapply::pblapply(X = csvList,dataFrameGenerator)
+  tileData2 <- do.call(what = rbind,tileData)
+  write.csv(x = tileData2,
+            file = file.path(outputDir,fileName),
+            row.names = FALSE)
+  if(summariseKMLs) kmlCompiler(homeDir = homeDir,
+                                flightName=flightName,
+                                modelName=modelName,
+                                copyKMLs = FALSE,
+                                mergeKMLs = TRUE)
 }
 
 

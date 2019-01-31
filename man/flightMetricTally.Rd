@@ -4,26 +4,36 @@
 \alias{flightMetricTally}
 \title{Flight Metric Tally}
 \usage{
-flightMetricTally(flightDir = "Model Output", modelName = "M14",
-  outputDir = "Model Summary Output", fileName = "MetricTally.csv")
+flightMetricTally(homeDir = getwd(), modelName = "M14", flightName,
+  fileName = "MetricTally.csv", summariseKMLs = FALSE)
 }
 \arguments{
-\item{flightDir}{Directory of multiple tile outputs}
+\item{homeDir}{Base Directory. Should have Model Output Directory.}
 
 \item{modelName}{DIMEC Model version to extract}
 
-\item{outputDir}{Target location for output}
+\item{flightName}{Name of flight to summarize}
 
 \item{fileName}{Output file name.  Be sure to add .csv to end.}
+
+\item{summariseKMLs}{Logical. If true, calls kmlCompiler to produce summary
+kmls}
 }
 \value{
-outputs a csv file that contains tallys of positive detections at different thresholds.
+fileName.csv This file summarises the predictions at each tile for an
+entire flight. The file contains several metrics of determining a "positive"
+but they all seem about equivalent just with lower or higher sensitivity.
+
+kmls optionally the function can export flight-level merged kmls
+by calling kmlCompiler
 }
 \description{
 Flight Metric Tally
 }
 \examples{
 \dontrun{
-flightMetricTally(modelName="M14")
+flightMetricTally(modelName="M17",
+   flightName = "ca_dosrios_20170813")
 }
+
 }

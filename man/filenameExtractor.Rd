@@ -4,15 +4,24 @@
 \alias{filenameExtractor}
 \title{Filename Extractor}
 \usage{
-filenameExtractor(filelist = kmlTiles$Image)
+filenameExtractor(fileNames = kmlTiles$Image)
 }
 \arguments{
-\item{filelist}{a vector of filenames that you want to extract lat long values from. Similar to this:
-purchase1: or_goldbeach_20160703--Set2_-123.521_41.94.jpg
-purchase2: "C01_R01-Hayfork2016_41.1684_-123.5119.jpg"
-I flipped lat and long so they can be pasted into google earth easily but now
-two different extraction codes are necessary..}
+\item{fileNames}{a vector of filenames that you want to extract lat long
+values from. Similar to this:
+  purchase1: or_goldbeach_20160703--Set2_-123.521_41.94.jpg
+  purchase2: "C01_R01-Hayfork2016_41.1684_-123.5119.jpg"
+  I flipped lat and long so they can be pasted into google earth easily
+   but nowtwo different extraction codes are necessary..}
+}
+\value{
+Returns a dataframe that has three columns: Name, Longitude, Latitude
 }
 \description{
 Filename Extractor
+}
+\examples{
+filenameExtractor(c("C01_R07-Arcata2016_40.9977_-123.75258.jpg",
+"C01_R07-Arcata2016_40.9977_-123.75322.jpg"))
+
 }

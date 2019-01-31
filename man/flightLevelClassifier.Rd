@@ -2,10 +2,10 @@
 % Please edit documentation in R/flightLevelClassifier.R
 \name{flightLevelClassifier}
 \alias{flightLevelClassifier}
-\title{Flight Level Classifier}
+\title{Flight Level Classifier.}
 \usage{
-flightLevelClassifier(flightDir = dirList[1], modelName = modelName,
-  exportResults = TRUE, returnPlotData = FALSE, classes = classnames)
+flightLevelClassifier(flightDir = dirList[1], modelName = modelLabel,
+  exportResults = TRUE, returnPlotData = FALSE, classes = classNames)
 }
 \arguments{
 \item{flightDir}{Directory of the chips to classify}
@@ -19,32 +19,16 @@ flightLevelClassifier(flightDir = dirList[1], modelName = modelName,
 \item{classes}{Vector of class names.}
 }
 \value{
-Returns either a data.frame of classifications, or outputs it to a plotData.csv file, or both.
+Returns either a data.frame of classifications, or outputs it to a plotData.csv, and two kml files, or both. Outputs to "getwd()/Model Output".
+
+DirectoryofResults Optionally exports the results as a set of files in directories, including positive images, kml's of positives, and the full model results
 }
 \description{
-Flight Level Classifier
+Flight Level Classifier.
 }
 \examples{
 \dontrun{
 
-modelName <- "M14"
-model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, paste0("ModelFile-",modelName,".h5")))
-classes <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
-
-
-###### Dos Rios Flight
-setwd("F:/Adam Cummings/GoogleImagery/ca_dosrios_20170813")
-dirList <- fs::dir_ls("Chips",recursive = FALSE) ##160 directories
-flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C07_R02-DosRios2016")],
-                      modelName=modelName,
-                      exportResults = TRUE,
-                      returnPlotData = FALSE,
-                      classes=classes)
-
-sapply(dirList,flightLevelClassifier,
-       modelName,
-       exportResults = TRUE,
-       returnPlotData = FALSE)
 }
 
 }

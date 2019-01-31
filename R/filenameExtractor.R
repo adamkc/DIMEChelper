@@ -1,33 +1,39 @@
 #' Filename Extractor
 #'
-#' @param filelist a vector of filenames that you want to extract lat long values from. Similar to this:
+#' @param fileNames a vector of filenames that you want to extract lat long
+#'  values from. Similar to this:
 #'    purchase1: or_goldbeach_20160703--Set2_-123.521_41.94.jpg
 #'    purchase2: "C01_R01-Hayfork2016_41.1684_-123.5119.jpg"
-#'    I flipped lat and long so they can be pasted into google earth easily but now
-#'    two different extraction codes are necessary..
+#'    I flipped lat and long so they can be pasted into google earth easily
+#'     but nowtwo different extraction codes are necessary..
 #'
-#' @return
-#' @export
+#' @return Returns a dataframe that has three columns: Name, Longitude, Latitude
 #'
 #' @examples
-filenameExtractor <- function(filelist = kmlTiles$Image){
-  #Purchase1 Filenames:
-  temp <- filelist %>% strsplit("-") %>% unlist %>%
-    matrix(nrow=(length(filelist)),byrow = TRUE) %>%
+#' filenameExtractor(c("C01_R07-Arcata2016_40.9977_-123.75258.jpg",
+#' "C01_R07-Arcata2016_40.9977_-123.75322.jpg"))
+#'
+#' @export
+filenameExtractor <- function(fileNames = kmlTiles$Image){
+  ## TODO:
+    ##Thows error if only a single file name is passed....
+  ## Purchase1 Filenames:
+  temp <- fileNames %>% strsplit("-") %>% unlist %>%
+    matrix(nrow=(length(fileNames)),byrow = TRUE) %>%
     .[,ncol(.)] %>% substr(1,nchar(.)-4) %>%
     strsplit("_") %>% unlist() %>%
-    matrix(nrow=length(filelist),byrow=TRUE)
-  if(ncol(temp)>1) return(data.frame(Name = filelist,
+    matrix(nrow=length(fileNames),byrow=TRUE)
+  if(ncol(temp)>1) return(data.frame(Name = fileNames,
                        Longitude = -as.numeric(temp[,1]),
                        Latitude = as.numeric(temp[,2])))
 
 
-  #Purchase2 Filenames:
-  temp <- filelist %>% strsplit("_") %>% unlist %>%
-    matrix(nrow=(length(filelist)),byrow = TRUE) %>%
+  ## Purchase2 Filenames:
+  temp <- fileNames %>% strsplit("_") %>% unlist %>%
+    matrix(nrow=(length(fileNames)),byrow = TRUE) %>%
     .[,c(3,4)]
   temp[,2] <- temp[,2] %>% substr(1,nchar(.)-4)
-  output <- data.frame(Name = filelist,
+  output <- data.frame(Name = fileNames,
                        Longitude = as.numeric(temp[,2]),
                        Latitude = as.numeric(temp[,1]))
   return(output)

@@ -2,27 +2,30 @@
 % Please edit documentation in R/singleClassGrabber.R
 \name{singleClassGrabber}
 \alias{singleClassGrabber}
-\title{Title}
+\title{Single Class Grabber}
 \usage{
-
-  singleClassGrabber(flightDir = "F:/Adam Cummings/GoogleImagery/ca_hayfork_20160529_4096mosaics/Model Output",
-  modelName = "M7", class = "PrivateGrow",
-  outputDir = "F:/Adam Cummings/GoogleImagery/ca_hayfork_20160529_4096mosaics/Model Summary Output/M7",
-  filterRate = 0.8, fileLabel = "Region")
+singleClassGrabber(homeDir = getwd(), flightName, modelName = "M7",
+  class = "PrivateGrow", filterRate = 0, fileLabel = "Region")
 }
 \arguments{
-\item{flightDir}{Directory of model output to merge for export}
+\item{homeDir}{Base Directory. Should have Model Output and Model Output
+Summary}
+
+\item{flightName}{flight name model output to merge for export}
 
 \item{modelName}{Particular model version output to target}
 
 \item{class}{Class name to compile}
 
-\item{outputDir}{Target directory for export}
-
-\item{filterRate}{Threshold value to filter the classifications by.}
+\item{filterRate}{Predictions lower than this value are dropped. Default is
+no threshold.}
 
 \item{fileLabel}{Additional name modifier for exported kml file.}
 }
+\value{
+saves a kml file in the "Model Output Summary" for the flight..
+}
 \description{
-Title
+This function searches across an entire flight and pulls classifications that
+match a given class.  Use this to pull all greenhouses, for example.
 }

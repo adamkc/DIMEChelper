@@ -8,21 +8,25 @@ buildBalancedModelData(data.folder, trainpercent = 0.8,
   validatepercent = 0.1, testpercent = 0.1)
 }
 \arguments{
-\item{data.folder}{Top directory that contains "Original" folder. "Model Data" will be added to this directory as well.}
+\item{data.folder}{Top directory that contains "Original" folder.
+"Model Data" will be added to this directory as well.}
 
-\item{trainpercent}{Percent of data to add to the training dataset. These three need to add to 1.}
+\item{trainpercent}{Percent of data to add to the training dataset. These
+three need to add to 1.}
 
-\item{validatepercent}{Percent of data to add to the validation dataset. These three need to add to 1.}
+\item{validatepercent}{Percent of data to add to the validation dataset.
+These three need to add to 1.}
 
-\item{testpercent}{Percent of data to add to the test dataset. These three need to add to 1.}
+\item{testpercent}{Percent of data to add to the test dataset. These three
+need to add to 1.}
+}
+\value{
+Builds a balanced dataset from the Original folder.  To be replaced
+ eventually by buildModelData with balancing logical argument.
 }
 \description{
-This function takes a starting folder "Original" and splits the classes within that folder
-into Training, Validation, and Testing data.  The data is balanced so that the smallest
-class dictates how much training data is added for each class.  The remainders are added to
-the validation dataset.
-}
-\examples{
-
-
+This function takes a starting folder "Original" and splits the classes
+ within that folder into Training, Validation, and Testing data.  The data is
+ balanced so that the smallestclass dictates how much training data is added
+  for each class.  The remainders are added to the validation dataset.
 }

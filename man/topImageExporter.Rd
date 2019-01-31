@@ -4,8 +4,8 @@
 \alias{topImageExporter}
 \title{Top Image Export}
 \usage{
-topImageExporter(plotData, class = "TrespassPlants",
-  unclassifieddir = searchdir, exportdir = exportdir,
+topImageExporter(plotData, class = "TrespassPlants", homeDir = getwd(),
+  flightName, tileName, modelName, exportDir = "Model Output",
   threshold = 0.9)
 }
 \arguments{
@@ -13,15 +13,22 @@ topImageExporter(plotData, class = "TrespassPlants",
 
 \item{class}{Target class}
 
-\item{unclassifieddir}{location of chips}
+\item{homeDir}{Base Directory.  Should have Chips folder}
 
-\item{exportdir}{target directory for new files}
+\item{flightName}{Target flight}
 
-\item{threshold}{threshold for exporting the top images}
+\item{tileName}{Target Tile}
+
+\item{modelName}{Name of model file to be used.}
+
+\item{exportDir}{Folder to export the top images to.}
+
+\item{threshold}{threshold for subsetting the results}
+}
+\value{
+Directory.  Creates a directory and populates with images that meet
+the prediction threshold.
 }
 \description{
 Top Image Export
-}
-\examples{
-
 }

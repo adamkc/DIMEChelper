@@ -4,19 +4,24 @@
 \alias{kmlMaker}
 \title{KML exporter}
 \usage{
-kmlMaker(kmlExportData = plotData, filename = "exportedkml",
+kmlMaker(kmlExportData = plotData, fileName = "exportedkml",
   exportDir = getwd(), layerName = "ModelOutput")
 }
 \arguments{
-\item{kmlExportData}{Requires columns named Latitude and Longitude in the epsg:4326 projection.  all other columns added to popup bubble of kml points.}
+\item{kmlExportData}{Requires columns named Latitude and Longitude in the
+epsg:4326 projection.  all other columns added to popup bubble of kml points.}
 
-\item{filename}{Name of the new kml file that is generated}
+\item{fileName}{Name of the new kml file that is generated}
 
 \item{exportDir}{Directory to export the kml file}
 
 \item{layerName}{layer name within the kml file}
 }
+\value{
+fileName.kml  This function exports a kml file.
+}
 \description{
-This function exports a kml into the designated directory.  It converts a data.frame of model predictions and lat-long values into a geospatial file
+This function exports a kml into the designated directory.  It converts a
+data.frame of model predictions and lat-long values into a geospatial file
 that can be loaded into Google Earth.
 }

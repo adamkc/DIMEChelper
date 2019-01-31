@@ -5,7 +5,7 @@
 \title{Image Annotation}
 \usage{
 annotateImagePrediction(plotDataOne = plotData[1, ],
-  imageDir = positiveLoc, outputDir = paste0(outputDir, "/",
+  imageDir = positiveLoc, outputDir = file.path(outputDir,
   "PositiveImages"))
 }
 \arguments{
@@ -15,9 +15,10 @@ annotateImagePrediction(plotDataOne = plotData[1, ],
 
 \item{outputDir}{Target directory for new images}
 }
+\value{
+The function exports the provided chips with neat bar graph of
+classification.
+}
 \description{
 Image Annotation
-}
-\examples{
-
 }

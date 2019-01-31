@@ -1,17 +1,25 @@
-#' Title
+#' retile
 #'
-#' @param imageDir Folder for current operations
-#' @param inputFolder Folder location of tiff file
-#' @param imageName Name of tiff file to chip.
+#' This takes a raster of the class SpatialGridDataFrame and converts it into jpg
+#' chips of the specified dimensions and overlap. Band color order can be
+#' specified with arguments
+#'
+#' @param imageName Name of Tif to be chipped.
+#' @param flightName name of flight to be chipped
 #' @param red Dimension number for red band
 #' @param green Dimension number for green band
 #' @param blue Dimension number for blue band
 #' @param dim Size of output jpg chip
 #' @param overlap number of pixels to overlap the chips
 #' @param outputFolder location that new chips are copied
+#' @param exportChipKey Logical, export the chipkey csv or not.
+#' @param outputJPG Logical.  Export jpg?
+#' @param returnData Logical. return jpgs? For future use when chips not saved.
 #'
-#' @return
-#' @export
+#' @return Optionally exports a list of images that were created.
+#' @return Chips jpg files into the outputFolder directory.
+#' @return chipList csv file listing the filenames and coordinates for the exported jpgs.
+#'
 #'
 #' @examples
 #' \dontrun{
@@ -27,13 +35,7 @@
 #' sapply(files,FUN=retile,outputFolder="Chips",flightName = "ca_crescentcity_20150715_rgb")
 #'
 #' }
-
-
-# library(rgdal)
-# library(raster)
-# library(magrittr)
-# library(jpeg)
-
+#' @export
 
 retile <- function(imageName,
                    flightName="ca_hayfork_20160529_rgb",
@@ -41,20 +43,28 @@ retile <- function(imageName,
                    dim=299,overlap=60,
                    outputFolder="Chips",
                    outputJPG = TRUE,
-                   returnData = FALSE){
-  #This takes a raster of the class SpatialGridDataFrame and converts
-  #it into jpg chips of the specified dimensions and overlap. Band color order can be
-  #specified with arguments
+                   returnData = FALSE,
+                   exportChipKey = FALSE){
+
 
   ## Create Output folder if necessary
-  csvName <- substr(basename(imageName),start = 1,stop = nchar(basename(imageName))-4)
+  csvName <- substr(basename(imageName),start = 1,
+                    stop = nchar(basename(imageName))-4)
+
   outputFolderFull <- file.path(outputFolder,flightName,csvName,"Unclassified")
-  if (dir.exists(outputFolderFull)) return(print(paste0(imageName, " is already clipped."))) ##Bail early to avoid redundant work
-  if (!dir.exists(outputFolder)) return(print(paste0("outputFolder '", outputFolder, "' doesnt exist.  Setwd to correct Dir?."))) ##Bail early to avoid redundant work
-  if(!file.exists(imageName)) return(print(paste0("Cannot locate file ",imageName)))
+
+  ## Bail early to avoid redundant work:
+  if (dir.exists(outputFolderFull))
+    return(print(paste0(imageName," is already clipped.")))
+  if (!dir.exists(outputFolder))
+    return(print(paste0("outputFolder '", outputFolder,
+                        "' doesnt exist.  Setwd to correct Dir?.")))
+  if(!file.exists(imageName))
+    return(print(paste0("Cannot locate file ",imageName)))
 
   dir.create(outputFolderFull, recursive=TRUE)
   image = rgdal::readGDAL(imageName)
+
   ## Extract variables from SpatialGridDataFrame
   pixelrows <- image@grid@cells.dim[2]
   pixelcols <-image@grid@cells.dim[1]
@@ -63,7 +73,7 @@ retile <- function(imageName,
   startLong <- image@bbox[1,1]
   cellsize <- image@grid@cellsize[1]
   rm(image)
-  ##df$col <- rep(1:pixelcols,times = pixelrows)  This labeling helped error check.
+  ##df$col <- rep(1:pixelcols,times = pixelrows) #This label helps error check.
   ##df$row <- rep(1:pixelrows,each = pixelcols)
 
   # b1 <-  matrix(df[,red],nrow = pixelrows,byrow = TRUE)
@@ -78,7 +88,8 @@ retile <- function(imageName,
   nimagerows <- ceiling(pixelrows / (dim-overlap))
   nimagecols <- ceiling(pixelcols / (dim-overlap))
 
-  print(sprintf("%s columns and %s rows gives %s expected images",nimagecols,nimagerows,nimagerows*nimagecols))
+  print(sprintf("%s columns and %s rows gives %s expected images",nimagecols,
+                nimagerows,nimagerows*nimagecols))
 
   ## Generate and export images:
   gridkey <- data.frame(Row=NULL,Col=NULL,File=NULL, Lat=NULL,Long=NULL)
@@ -111,14 +122,18 @@ retile <- function(imageName,
 
       proportionBlack <- sum(output==0)/(dim*dim*3)
 
-      if(proportionBlack <0.20){  ##Only print and update if image has little edge
+      if(proportionBlack <0.20){  ##Dont save black and edge pieces..
         ##
-        #output <- output/max(output)  #This is the old method that was used for all of the First purchase. Why?
-        output <- output/256  #Isn't this a more reliable way to scale between 0 and 1?
+        #This method was used for all of the First purchase. Why?:
+        # output <- output/max(output)
+        #Isn't this a more reliable way to scale between 0 and 1?:
+        output <- output/256
+
         chipLat <- startLat - (round(mean(rows)) * cellsize)
         chipLong <- startLong + (round(mean(cols)) * cellsize)
         ##
-        chipName <- paste0(csvName,"_", round(chipLat,5),"_",round(chipLong,5),".jpg")
+        chipName <- paste0(csvName,"_", round(chipLat,5),"_",
+                           round(chipLong,5),".jpg")
         fileName <- paste0(outputFolderFull,"/",chipName)
         if (outputJPG) jpeg::writeJPEG(output, target = fileName,quality=0.95)
         if (returnData){
@@ -131,7 +146,9 @@ retile <- function(imageName,
       }
     }
     #csvName <- substr(imageName,start = 1,stop = nchar(imageName)-4)
-    write.csv(gridkey,file = paste0(csvName,"_ChipKey.csv"),row.names = FALSE)
+    if(exportChipKey)
+      write.csv(gridkey,
+                file = paste0(csvName,"_ChipKey.csv"),row.names = FALSE)
   }
   if(returnData){
     imageList <- imageList[[which(!sapply(FUN = is.null,imageList))]]

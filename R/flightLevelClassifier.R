@@ -7,31 +7,14 @@
 #' @param classes Vector of class names.
 #'
 #' @return Returns either a data.frame of classifications, or outputs it to a plotData.csv, and two kml files, or both. Outputs to "getwd()/Model Output".
-#' @export
+#' @return DirectoryofResults Optionally exports the results as a set of files in directories, including positive images, kml's of positives, and the full model results
 #'
 #' @examples
 #' \dontrun{
 #'
-#' modelLabel <- "M14"
-#' model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelLabel, paste0("ModelFile-",modelLabel,".h5")))
-#' classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+#' }
 #'
-#'
-#' ###### Dos Rios Flight
-#' setwd("F:/Adam Cummings/GoogleImagery/ca_dosrios_20170813")
-#' dirList <- fs::dir_ls("Chips",recursive = FALSE) ##160 directories
-#' flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C07_R02-DosRios2016")],
-#'                       modelName=modelLabel,
-#'                       exportResults = TRUE,
-#'                       returnPlotData = FALSE,
-#'                       classes=classes)
-#'
-#' sapply(dirList,flightLevelClassifier,
-#'        modelLabel,
-#'        exportResults = TRUE,
-#'        returnPlotData = FALSE)
-#'}
-#'
+#' @export
 
 
 flightLevelClassifier <- function(flightDir=dirList[1],
@@ -85,8 +68,16 @@ flightLevelClassifier <- function(flightDir=dirList[1],
 
     dir.create(outputDir, recursive=TRUE)
     write.csv(plotData,file = paste0(outputDir,"/plotData.csv"))
-    topImageExporter(plotData, "TrespassPlants",flightDir,outputDir,threshold = 0.20)
-    topImageExporter(plotData, "TrespassHoles",flightDir,outputDir,threshold = 0.20)
+    topImageExporter(plotData,
+                     "TrespassPlants",
+                     flightName=flightName,
+                     tileName = tileName,
+                     threshold = 0.20)
+    topImageExporter(plotData,
+                     "TrespassHoles",
+                     flightName=flightName,
+                     tileName = tileName,
+                     threshold = 0.20)
 
     ###KML;
 
@@ -118,35 +109,3 @@ flightLevelClassifier <- function(flightDir=dirList[1],
   if(returnPlotData) return(plotData)
 }
 
-
-#
-# modelLabel <- "M16"
-# model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files",modelLabel, paste0("ModelFile-",modelLabel,".h5")))
-# classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelLabel, "classes.txt"))[,1]
-#
-#
-# ##### Dos Rios Flight
-# setwd("F:/Adam Cummings/GoogleImagery/ca_dosrios_20170813")
-# dirList <- fs::dir_ls("Chips",recursive = FALSE) ##160 directories
-# flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C01_R07")],
-#                       modelName=modelLabel,
-#                       exportResults = TRUE,
-#                       returnPlotData = FALSE,
-#                       classes=classNames)
-#
-# sapply(dirList,flightLevelClassifier,
-#        modelLabel,
-#        exportResults = TRUE,
-#        returnPlotData = FALSE)
-#
-#
-# ###### Purchase2
-# setwd("G:/GoogleImagery/Purchase2")
-# dirList <- fs::dir_ls("Chips/ca_hayfork_20160529_rgb",recursive = FALSE) ##160 directories
-# flightLevelClassifier(flightDir = dirList[grep(x = dirList, pattern = "C05_R02")],
-#                       modelName=modelLabel,
-#                       exportResults = TRUE,
-#                       returnPlotData = FALSE,
-#                       classes=classNames)
-#
-# sapply(dirList,flightLevelClassifier,modelLabel,exportResults = TRUE, returnPlotData = FALSE)

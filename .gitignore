@@ -4,3 +4,4 @@
 .Ruserdata
 .Rproj
 GCP_BatchDownloader.R
+inst/doc
