@@ -5,13 +5,15 @@
 \title{Image Annotation}
 \usage{
 annotateImagePrediction(plotDataOne = plotData[1, ],
-  imageDir = positiveLoc, outputDir = file.path(outputDir,
-  "PositiveImages"))
+  imageDir = positiveLoc, classes = classNames,
+  outputDir = file.path(outputDir, "PositiveImages"))
 }
 \arguments{
 \item{plotDataOne}{A single line to annotate from a plotData file}
 
 \item{imageDir}{Location of images to annotate}
+
+\item{classes}{vector of class names}
 
 \item{outputDir}{Target directory for new images}
 }

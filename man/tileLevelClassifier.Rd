@@ -4,8 +4,9 @@
 \alias{tileLevelClassifier}
 \title{Tile Level Classifier.}
 \usage{
-tileLevelClassifier(tileName, homeDir = getwd(), flightName, modelName,
-  exportResults = TRUE, returnPlotData = FALSE, classes = classNames)
+tileLevelClassifier(tileName, homeDir = getwd(), chipsName = "Chips",
+  flightName, modelName, exportResults = TRUE, returnPlotData = FALSE,
+  classes = classNames)
 }
 \arguments{
 \item{tileName}{Name of tile to classify}
@@ -30,4 +31,31 @@ Returns either a data.frame of classifications, or outputs it to a
 }
 \description{
 Important: Requires a model loaded into the environment called "model".
+}
+\examples{
+\dontrun{
+
+modelLabel <- "M17"
+model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files", modelLabel, paste0("ModelFile-",modelLabel,".h5")))
+classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+
+
+###### Dos Rios Flight
+setwd("F:/Adam Cummings/GoogleImagery/FirstPurchase/")
+dirList <- list.dirs("Chips/ca_dosrios_20170813",recursive = FALSE,full.names=FALSE) ##160 directories
+tileLevelClassifier(flightName = "ca_dosrios_20170813",
+                     tileName = "C15_R01-DosRios2016",
+                      modelName=modelLabel,
+                      exportResults = TRUE,
+                      returnPlotData = FALSE,
+                      classes=classNames)
+
+sapply(dirList,tileLevelClassifier,
+       flightName = "ca_dosrios_20170813",
+       modelName=modelLabel,
+       exportResults = TRUE,
+       returnPlotData = FALSE,
+       classes=classNames)
+}
+
 }

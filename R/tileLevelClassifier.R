@@ -19,13 +19,18 @@
 #' \dontrun{
 #'
 #' modelLabel <- "M17"
-#' model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files", modelLabel, paste0("ModelFile-",modelLabel,".h5")))
-#' classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+#' modelDir <- file.path("Model Files",
+#'                        modelLabel,
+#'                        paste0("ModelFile-",modelLabel,".h5"))
+#' model <- keras::load_model_hdf5(file.path(modelDir,
+#'                                      paste0("ModelFile-",modelLabel,".h5")))
+#' classNames <- read.table(file.path(modelDir, "classes.txt"))[,1]
 #'
 #'
-#' ###### Dos Rios Flight
+#' ## Dos Rios Flight
 #' setwd("F:/Adam Cummings/GoogleImagery/FirstPurchase/")
-#' dirList <- list.dirs("Chips/ca_dosrios_20170813",recursive = FALSE,full.names=FALSE) ##160 directories
+#' dirList <- list.dirs("Chips/ca_dosrios_20170813",recursive = FALSE,
+#' full.names=FALSE) ##160 directories
 #' tileLevelClassifier(flightName = "ca_dosrios_20170813",
 #'                      tileName = "C15_R01-DosRios2016",
 #'                       modelName=modelLabel,
@@ -33,6 +38,16 @@
 #'                       returnPlotData = FALSE,
 #'                       classes=classNames)
 #'
+#' ##Use flightLevelClassifier to classify many tiles at once:
+#'
+#' flightLevelClassifier(dirList,
+#'        flightName = "ca_dosrios_20170813",
+#'        modelName=modelLabel,
+#'        exportResults = TRUE,
+#'        returnPlotData = FALSE,
+#'        classes=classNames)
+#'
+#' ## This also works:
 #' sapply(dirList,tileLevelClassifier,
 #'        flightName = "ca_dosrios_20170813",
 #'        modelName=modelLabel,
@@ -44,6 +59,7 @@
 #' @export
 tileLevelClassifier <- function(tileName,
                                 homeDir = getwd(),
+                                chipsName = "Chips",
                                 flightName,
                                 modelName,
                                 exportResults=TRUE,
@@ -51,7 +67,7 @@ tileLevelClassifier <- function(tileName,
                                 classes=classNames){
 
   outputDir <- file.path(homeDir,"Model Output",flightName,tileName,modelName)
-  flightDir <- file.path(homeDir,"Chips",flightName,tileName)
+  flightDir <- file.path(homeDir,chipsName,flightName,tileName)
   ##Problem Check:
   if(dir.exists(outputDir) & exportResults)
     return(print(paste0(file.path(flightName,tileName),
@@ -86,7 +102,7 @@ tileLevelClassifier <- function(tileName,
   plotData <- stats::setNames(data.frame(preds),classes)
 
   plotData$Image <- filesToClassify
-  plotData$Model_Prediction = classes[apply(plotData[,1:length(classes)],
+  plotData$Model_Prediction <- classes[apply(plotData[,1:length(classes)],
                                             1,which.max)]
   plotData$TrespassTotal <- plotData$TrespassHoles + plotData$TrespassPlants
 

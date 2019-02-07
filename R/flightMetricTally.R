@@ -24,15 +24,16 @@
 flightMetricTally <- function(homeDir= getwd(),
                               modelName="M14",
                               flightName,
-                              fileName = "MetricTally.csv",
+                              fileName = NULL,
                               summariseKMLs=FALSE){
   ##Create outputDir:
   outputDir <- file.path(homeDir, "Model Output Summary",
                        flightName, modelName)
   dir.create(outputDir, recursive=TRUE, showWarnings = FALSE)
 
+  if(is.null(fileName)) fileName <- paste0("MetricTally-",modelName,".csv")
   ##CSV List:
-  csvList <- fs::dir_ls(path = file.path(homeDir,flightName),
+  csvList <- fs::dir_ls(path = file.path(homeDir,"Model Output",flightName),
                         recursive = TRUE, glob = "*.csv")
   csvList <- csvList[grep(csvList,pattern = modelName)]
 
@@ -65,11 +66,11 @@ flightMetricTally <- function(homeDir= getwd(),
   write.csv(x = tileData2,
             file = file.path(outputDir,fileName),
             row.names = FALSE)
-  if(summariseKMLs) kmlCompiler(homeDir = homeDir,
-                                flightName=flightName,
-                                modelName=modelName,
-                                copyKMLs = FALSE,
-                                mergeKMLs = TRUE)
+  if(summariseKMLs){
+    print("Collecting KMLs:")
+    kmlCompiler(homeDir = homeDir, flightName=flightName, modelName=modelName,
+                copyKMLs = FALSE, mergeKMLs = TRUE)
+  }
 }
 
 

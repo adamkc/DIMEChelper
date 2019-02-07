@@ -14,9 +14,18 @@
 #'
 #' @return saves a kml file in the "Model Output Summary" for the flight..
 #' @export
+#'
+#'
+#' @example
+#' \dontrun{
+#'
+#' singleClassGrabber(flightName = "ca_mtshasta_20170709_rgb")
+#' }
+
+
 singleClassGrabber <- function(homeDir = getwd(),
                                flightName,
-                               modelName="M7",
+                               modelName=modelLabel,
                                class="PrivateGrow",
                                filterRate = 0.0,
                                fileLabel = "Region"){
@@ -34,7 +43,7 @@ singleClassGrabber <- function(homeDir = getwd(),
   classList2 <-  do.call(what = rbind,args = classList)
   if(nrow(classList2) == 0)
     return("No points match criteria")
-  fileName = paste0(class,"_",
+  fileName <- paste0(class,"_",
                     gsub(pattern = "\\.",
                          replacement = "_",filterRate))
   kmlMaker(kmlExportData = classList2,
@@ -43,9 +52,3 @@ singleClassGrabber <- function(homeDir = getwd(),
            layerName = class)
 
 }
-
-#e.g.:
-# singleClassGrabber(class="PrivateGrow")
-# singleClassGrabber(flightDir = "F:/Adam Cummings/GoogleImagery/ca_dosrios_20170813/Model Output",
-#                    class="TrespassHoles",filterRate = 0.70,modelName = "M14",fileLabel = "DosRios",
-#                    outputDir = "F:/Adam Cummings/GoogleImagery")

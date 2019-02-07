@@ -63,7 +63,7 @@ retile <- function(imageName,
     return(print(paste0("Cannot locate file ",imageName)))
 
   dir.create(outputFolderFull, recursive=TRUE)
-  image = rgdal::readGDAL(imageName)
+  image <- rgdal::readGDAL(imageName)
 
   ## Extract variables from SpatialGridDataFrame
   pixelrows <- image@grid@cells.dim[2]

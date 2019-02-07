@@ -17,9 +17,9 @@ mosaicer <- function(homeDir = getwd(),
                      originalFolder = "rgb",
                      flightName,
                      mosaicLabel){
-  inputFlight = file.path(homeDir,originalFolder, flightName)
+  inputFlight <- file.path(homeDir,originalFolder, flightName)
 
-  outputDir = file.path(homeDir,"Mosaics")
+  outputDir <- file.path(homeDir,"Mosaics")
 
   #####
   dir.create(file.path(outputDir,flightName),
@@ -30,21 +30,21 @@ mosaicer <- function(homeDir = getwd(),
   #####Process and store extents of all tif images
   tiffNames <- list.files(inputFlight, full.names = TRUE,pattern="*.tif")
 
-  GeoData = data.frame(nrow = length(tiffNames), ncol = 5)
+  GeoData <- data.frame(nrow = length(tiffNames), ncol = 5)
 
   for (i in 1:length(tiffNames)){ #collect extent info for each small .tif
-    TheRaster = raster(tiffNames[i])
-    rasExtent = extent(TheRaster)
-    GeoData[i, 1] = tiffNames[i]
-    GeoData[i, 2] = round(rasExtent[1], 3) #Xmin
-    GeoData[i, 3] = round(rasExtent[2], 3) #Xmax
-    GeoData[i, 4] = round(rasExtent[3], 3) #Ymin
-    GeoData[i, 5] = round(rasExtent[4], 3) #Ymax
+    TheRaster <- raster::raster(tiffNames[i])
+    rasExtent <- raster::extent(TheRaster)
+    GeoData[i, 1] <- tiffNames[i]
+    GeoData[i, 2] <- round(rasExtent[1], 3) #Xmin
+    GeoData[i, 3] <- round(rasExtent[2], 3) #Xmax
+    GeoData[i, 4] <- round(rasExtent[3], 3) #Ymin
+    GeoData[i, 5] <- round(rasExtent[4], 3) #Ymax
 
     #print(i)
   }
 
-  colnames(GeoData) = c("File_Name", "XMin", "XMax", "YMin", "YMax")
+  colnames(GeoData) <- c("File_Name", "XMin", "XMax", "YMin", "YMax")
 
   nCols <- ceiling(nrow(table(GeoData$XMin))/5)
   colLabs <- rep(1:nCols, each=5)
@@ -55,19 +55,19 @@ mosaicer <- function(homeDir = getwd(),
     data.frame %>%
     dplyr::mutate(colLab = colLabs[1:nrow(.)]) %>%
     .[,-2] %>%
-    rename(XMin = Var1) %>%
+    dplyr::rename(XMin = Var1) %>%
     dplyr::mutate(XMin = as.numeric(levels(XMin))[XMin])
   rowKey <- table(GeoData$YMin[order(GeoData$YMin,decreasing = TRUE)]) %>%
     data.frame %>%
     dplyr::mutate(rowLab = rowLabs[1:nrow(.)]) %>%
     .[,-2] %>%
-    rename(YMin = Var1) %>%
+    dplyr::rename(YMin = Var1) %>%
     dplyr::mutate(YMin = as.numeric(levels(YMin))[YMin])
 
   GeoData2 <- GeoData %>%
     dplyr::left_join(colKey) %>%
     dplyr::left_join(rowKey)
-  table(GeoData2$rowLab,GeoData2$colLab)
+  print(table(GeoData2$rowLab,GeoData2$colLab))
 
   #####End Extent processing
 
@@ -84,7 +84,7 @@ mosaicer <- function(homeDir = getwd(),
                              "_R", stringr::str_pad(r,2,pad = "0"),
                              "-",mosaicLabel,".tif")
         if (!file.exists(mosaicName)){
-          suppressMessages(mosaic_rasters(gdalfile=files,
+          suppressMessages(gdalUtils::mosaic_rasters(gdalfile=files,
                                           dst_dataset = file.path(outputDir,
                                                                   flightName,
                                                                   mosaicName)))

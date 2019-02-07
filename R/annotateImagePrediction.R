@@ -3,6 +3,7 @@
 #' @param plotDataOne A single line to annotate from a plotData file
 #' @param imageDir Location of images to annotate
 #' @param outputDir Target directory for new images
+#' @param classes vector of class names
 #'
 #' @return The function exports the provided chips with neat bar graph of
 #' classification.
@@ -10,12 +11,13 @@
 #' @export
 annotateImagePrediction <- function(plotDataOne=plotData[1,],
                                     imageDir=positiveLoc,
+                                    classes = classNames,
                                     outputDir=file.path(outputDir,
                                                         "PositiveImages")){
   if(!dir.exists(outputDir)) dir.create(outputDir)
-  img <- jpeg::readJPEG(paste0(imageDir,"/",plotDataOne$Image))
+  img <- jpeg::readJPEG(file.path(imageDir,plotDataOne$Image))
   g <- grid::rasterGrob(img)
-  plot <- plotDataOne %>% gather(Var,Val,1:length(classes)) %>%
+  plot <- plotDataOne %>% tidyr::gather(Var,Val,1:length(classes)) %>%
     .[order(.$Val,decreasing=TRUE),] %>%
     dplyr::mutate(Val = round(Val,2),
            Var = factor(Var,levels=rev(Var)),
@@ -30,12 +32,13 @@ annotateImagePrediction <- function(plotDataOne=plotData[1,],
     ylim(0,1) + coord_flip() + theme_classic() + guides(fill=FALSE) +
     theme(axis.title = element_blank(),
           axis.text = element_blank(),
-          axis.ticks.x = element_blank(),plot.margin = unit(c(0,0,-10,0),"pt")) #+
-  #annotation_custom(g,xmin=.5,xmax=11.5,ymin=-0,ymax=1)
+          axis.ticks.x = element_blank(),plot.margin = unit(c(0,0,-10,0),"pt"))
+
   combinedplot <- cowplot::plot_grid(plot,g,ncol = 1,rel_heights = c(.3,1))
   ggsave(plot = combinedplot,
-         filename = strsplit(plotDataOne$Image,"/")[[1]][2],
-         path = outputDir,height=2.5,width=1.7,units = "in")
+         filename = plotDataOne$Image,
+         path = outputDir,
+         height=2.5,width=1.7,units = "in")
 
 }
 
