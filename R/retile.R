@@ -72,7 +72,17 @@ retile <- function(imageName,
   startLat <- image@bbox[2,2]
   startLong <- image@bbox[1,1]
   cellsize <- image@grid@cellsize[1]
+
+
+  ##Reproject Start Point
+  if(!raster::compareCRS(image,raster::crs("+init=epsg:4326"))){
+    xy <- sp::SpatialPoints(coords = data.frame(t(image@bbox)),
+                  proj4string = raster::crs(image))
+    wgs.xy <- sp::spTransform(xy,CRSobj = sp::CRS("+init=epsg:4326"))
+
+  }
   rm(image)
+
   ##df$col <- rep(1:pixelcols,times = pixelrows) #This label helps error check.
   ##df$row <- rep(1:pixelrows,each = pixelcols)
 
@@ -129,8 +139,16 @@ retile <- function(imageName,
         #Isn't this a more reliable way to scale between 0 and 1?:
         output <- output/256
 
-        chipLat <- startLat - (round(mean(rows)) * cellsize)
-        chipLong <- startLong + (round(mean(cols)) * cellsize)
+        # chipLat <- startLat - (round(mean(rows)) * cellsize)
+        # chipLong <- startLong + (round(mean(cols)) * cellsize)
+
+        chipLat <- wgs.xy@coords[2,2] - ((wgs.xy@coords[2,2] -
+                                            wgs.xy@coords[1,2]) *
+                                           (mean(rows)/pixelrows))
+        chipLong <- wgs.xy@coords[1,1] + ((wgs.xy@coords[2,1] -
+                                             wgs.xy@coords[1,1]) *
+                                            (mean(cols)/pixelcols))
+
         ##
         chipName <- paste0(csvName,"_", round(chipLat,5),"_",
                            round(chipLong,5),".jpg")

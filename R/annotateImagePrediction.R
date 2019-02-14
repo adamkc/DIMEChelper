@@ -17,7 +17,7 @@ annotateImagePrediction <- function(plotDataOne=plotData[1,],
   if(!dir.exists(outputDir)) dir.create(outputDir)
   img <- jpeg::readJPEG(file.path(imageDir,plotDataOne$Image))
   g <- grid::rasterGrob(img)
-  plot <- plotDataOne %>% tidyr::gather(Var,Val,1:length(classes)) %>%
+  plot <- plotDataOne %>% tidyr::gather(Var,Val,seq_along(classes)) %>%
     .[order(.$Val,decreasing=TRUE),] %>%
     dplyr::mutate(Val = round(Val,2),
            Var = factor(Var,levels=rev(Var)),

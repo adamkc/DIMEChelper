@@ -32,7 +32,7 @@ mosaicer <- function(homeDir = getwd(),
 
   GeoData <- data.frame(nrow = length(tiffNames), ncol = 5)
 
-  for (i in 1:length(tiffNames)){ #collect extent info for each small .tif
+  for (i in seq_along(tiffNames)){ #collect extent info for each small .tif
     TheRaster <- raster::raster(tiffNames[i])
     rasExtent <- raster::extent(TheRaster)
     GeoData[i, 1] <- tiffNames[i]
@@ -53,13 +53,13 @@ mosaicer <- function(homeDir = getwd(),
 
   colKey <- table(GeoData$XMin[order(GeoData$XMin)]) %>%
     data.frame %>%
-    dplyr::mutate(colLab = colLabs[1:nrow(.)]) %>%
+    dplyr::mutate(colLab = colLabs[seq_len(nrow(.))]) %>%
     .[,-2] %>%
     dplyr::rename(XMin = Var1) %>%
     dplyr::mutate(XMin = as.numeric(levels(XMin))[XMin])
   rowKey <- table(GeoData$YMin[order(GeoData$YMin,decreasing = TRUE)]) %>%
     data.frame %>%
-    dplyr::mutate(rowLab = rowLabs[1:nrow(.)]) %>%
+    dplyr::mutate(rowLab = rowLabs[seq_len(nrow(.))]) %>%
     .[,-2] %>%
     dplyr::rename(YMin = Var1) %>%
     dplyr::mutate(YMin = as.numeric(levels(YMin))[YMin])

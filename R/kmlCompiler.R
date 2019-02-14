@@ -74,7 +74,7 @@ kmlCompiler <- function(homeDir = getwd(),
       pb <- pbapply::startpb(0, length(rawDataLocs))
       on.exit(pbapply::closepb(pb))
 
-      for(i in 1:length(rawDataLocs)){
+      for(i in seq_along(rawDataLocs)){
         temp <- read.csv(rawDataLocs[i])
         plotDataTop[[i]] <<- temp[temp$TrespassTotal > 0.2,]
         plotDataPred[[i]] <<-temp[temp$Model_Prediction == "TrespassHoles" |

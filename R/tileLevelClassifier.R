@@ -102,7 +102,7 @@ tileLevelClassifier <- function(tileName,
   plotData <- stats::setNames(data.frame(preds),classes)
 
   plotData$Image <- filesToClassify
-  plotData$Model_Prediction <- classes[apply(plotData[,1:length(classes)],
+  plotData$Model_Prediction <- classes[apply(plotData[,seq_along(classes)],
                                             1,which.max)]
   plotData$TrespassTotal <- plotData$TrespassHoles + plotData$TrespassPlants
 
