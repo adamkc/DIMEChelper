@@ -30,7 +30,7 @@ flightLevelClassifier <- function(homeDir = getwd(),
                                    length(list.files(x,recursive=TRUE))
                                  })
   stepTime <- 45
-  round(computeTime = sum(tileSizes) * (stepTime/1000) / 3600, 2)
+  computeTime = round(sum(tileSizes) * (stepTime/1000) / 3600, 2)
   endTime <- Sys.time() + computeTime * 3600
   message(sprintf("There are %s tiles with %s chips.",
                   length(tileList),

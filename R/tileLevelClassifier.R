@@ -64,7 +64,9 @@ tileLevelClassifier <- function(tileName,
                                 modelName,
                                 exportResults=TRUE,
                                 returnPlotData=FALSE,
-                                classes=classNames){
+                                classes=classNames,
+                                positiveClasses = c("TrespassPlants",
+                                                    "TrespassHoles")){
 
   outputDir <- file.path(homeDir,"Model Output",flightName,tileName,modelName)
   flightDir <- file.path(homeDir,chipsName,flightName,tileName)
@@ -104,7 +106,8 @@ tileLevelClassifier <- function(tileName,
   plotData$Image <- filesToClassify
   plotData$Model_Prediction <- classes[apply(plotData[,seq_along(classes)],
                                             1,which.max)]
-  plotData$TrespassTotal <- plotData$TrespassHoles + plotData$TrespassPlants
+  if(all(positiveClasses %in% classes))
+    plotData$PositiveTotal <- apply(plotData[,positiveClasses],1,sum)
 
   ##OUTPUT
   if(exportResults){
@@ -113,27 +116,24 @@ tileLevelClassifier <- function(tileName,
 
     plotData <- cbind(plotData,latLong[,c(3,2)])
 
-
-
     dir.create(outputDir, recursive=TRUE)
     write.csv(plotData,file = file.path(outputDir,"plotData.csv"))
-    topImageExporter(plotData,
-                     "TrespassPlants",
-                     flightName=flightName,
-                     tileName = tileName,
-                     modelName = modelName,
-                     threshold = 0.20)
-    topImageExporter(plotData,
-                     "TrespassHoles",
-                     flightName=flightName,
-                     tileName = tileName,
-                     modelName = modelName,
-                     threshold = 0.20)
+
+    if(all(positiveClasses %in% classes)){
+
+    }
+   sapply(positiveClasses,function(x) {
+     topImageExporter(plotData,class = x,
+                       flightName=flightName,
+                       tileName = tileName,
+                       modelName = modelName,
+                       threshold = 0.20)
+   })
+
     ## KML:
 
-    kmlSubset <-  subset(plotData,TrespassHoles >0.20 | TrespassPlants >0.20)
-    kmlSubset2 <- subset(plotData, Model_Prediction == "TrespassPlants" |
-                           Model_Prediction == "TrespassHoles")
+    kmlSubset <-  plotData[apply(plotData[,positiveClasses] > 0.2,1,any),]
+    kmlSubset2 <- subset(plotData, Model_Prediction %in% positiveClasses)
 
     kmlMaker(plotData,
              fileName = paste0(flightName,"-FULL-",modelName),
@@ -149,9 +149,9 @@ tileLevelClassifier <- function(tileName,
 
     if(nrow(kmlSubset2) > 0){
       kmlMaker(kmlSubset2,
-               fileName = paste0(flightName,"-TrespassPredicted-",modelName),
+               fileName = paste0(flightName,"-Predicted-",modelName),
                exportDir = outputDir,
-               layerName = paste0("TrespassPredicted--",modelName))
+               layerName = paste0("Predicted--",modelName))
     }
 
 

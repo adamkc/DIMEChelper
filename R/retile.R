@@ -168,8 +168,19 @@ retile <- function(imageName,
       write.csv(gridkey,
                 file = paste0(csvName,"_ChipKey.csv"),row.names = FALSE)
   }
+
+  ## Display count of chips and delete empty directory if no chips:
+  if(outputJPG){
+    exportedChipCount <- nrow(gridkey)
+    message(paste0(exportedChipCount," chips created."))
+    if(exportedChipCount==0){
+      message("No valid chips exported. Deleting folder.")
+      unlink(dirname(outputFolderFull),recursive=TRUE)
+    }
+  }
   if(returnData){
     imageList <- imageList[[which(!sapply(FUN = is.null,imageList))]]
     return(imageList)
   }
+
 }
