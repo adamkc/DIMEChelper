@@ -21,7 +21,10 @@
 flightLevelClassifier <- function(homeDir = getwd(),
                                   flightName,
                                   modelName,
-                                  classes){
+                                  classes,
+                                  positiveClasses = c("TrespassPlants",
+                                                      "TrespassHoles"),
+                                  filterThreshold = 0.2){
   message("Assessing flight size:")
   tileList <- list.dirs(file.path("Chips",flightName),
                         recursive=FALSE,full.names = TRUE)
@@ -47,7 +50,9 @@ at %sms/step and should finish around %s.",
     tileLevelClassifier(tileName   = x,
                         flightName = flightName,
                         modelName  = modelName,
-                        classes    = classes)
+                        classes    = classes,
+                        positiveClasses = positiveClasses,
+                        filterThreshold = filterThreshold)
   })
 
    return(NULL)

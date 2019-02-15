@@ -66,7 +66,8 @@ tileLevelClassifier <- function(tileName,
                                 returnPlotData=FALSE,
                                 classes=classNames,
                                 positiveClasses = c("TrespassPlants",
-                                                    "TrespassHoles")){
+                                                    "TrespassHoles"),
+                                filterThreshold = 0.2){
 
   outputDir <- file.path(homeDir,"Model Output",flightName,tileName,modelName)
   flightDir <- file.path(homeDir,chipsName,flightName,tileName)
@@ -106,8 +107,15 @@ tileLevelClassifier <- function(tileName,
   plotData$Image <- filesToClassify
   plotData$Model_Prediction <- classes[apply(plotData[,seq_along(classes)],
                                             1,which.max)]
-  if(all(positiveClasses %in% classes))
-    plotData$PositiveTotal <- apply(plotData[,positiveClasses],1,sum)
+  if(all(positiveClasses %in% classes)){
+    if(length(positiveClasses) > 1)
+      plotData$PositiveTotal <- apply(plotData[,positiveClasses],1,sum)
+    if(length(positiveClasses) == 1)
+      plotData$PositiveTotal <- plotData[,positiveClasses]
+  } else{
+    plotData$PositiveTotal <- NA
+  }
+
 
   ##OUTPUT
   if(exportResults){
@@ -122,17 +130,22 @@ tileLevelClassifier <- function(tileName,
     if(all(positiveClasses %in% classes)){
 
     }
-   sapply(positiveClasses,function(x) {
-     topImageExporter(plotData,class = x,
+    sapply(positiveClasses,function(x) {
+      topImageExporter(plotData,class = x,
                        flightName=flightName,
                        tileName = tileName,
                        modelName = modelName,
-                       threshold = 0.20)
-   })
+                       threshold = filterThreshold)
+    })
 
     ## KML:
+    if(length(positiveClasses)>1){
+      kmlSubset <-  plotData[apply(plotData[,positiveClasses] > filterThreshold,
+                                   1,any),]
+    } else{
+      kmlSubset <-  plotData[plotData[,positiveClasses] > filterThreshold,]
+    }
 
-    kmlSubset <-  plotData[apply(plotData[,positiveClasses] > 0.2,1,any),]
     kmlSubset2 <- subset(plotData, Model_Prediction %in% positiveClasses)
 
     kmlMaker(plotData,
