@@ -7,6 +7,9 @@
 #' @param flightName Name of flight to be classified.
 #' @param modelName Name of loaded model for labeling.
 #' @param classes vector of classes for model
+#' @param positiveClasses vector of positive classes for scoring positive hits.
+#' @param filterThreshold Adjustable threshold for classifying a positive hit.
+#' @param assessFlightSize Spend a couple minutes getting a precise time estimate?
 #'
 #' @return
 #'
@@ -24,30 +27,45 @@ flightLevelClassifier <- function(homeDir = getwd(),
                                   classes,
                                   positiveClasses = c("TrespassPlants",
                                                       "TrespassHoles"),
-                                  filterThreshold = 0.2){
-  message("Assessing flight size:")
-  tileList <- list.dirs(file.path("Chips",flightName),
+                                  filterThreshold = 0.2,
+                                  assessFlightSize = TRUE){
+  tileList <- list.dirs(file.path(homeDir,"Chips",flightName),
                         recursive=FALSE,full.names = TRUE)
-  tileSizes <- pbapply::pbsapply(X = tileList,
-                                 FUN = function(x){
-                                   length(list.files(x,recursive=TRUE))
-                                 })
-  stepTime <- 45
-  computeTime = round(sum(tileSizes) * (stepTime/1000) / 3600, 2)
+
+  if(assessFlightSize){
+    message("Assessing flight size:")
+
+    tileSizes <- pbapply::pbsapply(X = tileList,
+                                   FUN = function(x){
+                                     length(list.files(x,recursive=TRUE))
+                                   })
+  } else{
+    tileSizes <- 6500
+  }
+
+  tileCount <- mean(tileSizes)*length(tileList)
+
+  #Computational speed:
+  stepTime <- 55
+
+  computeTime = round(tileCount * (stepTime/1000) / 3600, 2)
   endTime <- Sys.time() + computeTime * 3600
-  message(sprintf("There are %s tiles with %s chips.",
+  message(sprintf("There are %s tiles with ~%s chips.",
                   length(tileList),
-                  sum(tileSizes,na.rm=TRUE)))
+                  tileCount,na.rm=TRUE))
 
   message(sprintf("Classification will take %s hrs
-at %sms/step and should finish around %s.",
+                    at %sms/step and should finish around %s.",
                   computeTime,
                   stepTime,
                   endTime))
 
 
+
+
   sapply(basename(tileList),function(x){
     tileLevelClassifier(tileName   = x,
+                        homeDir = homeDir,
                         flightName = flightName,
                         modelName  = modelName,
                         classes    = classes,

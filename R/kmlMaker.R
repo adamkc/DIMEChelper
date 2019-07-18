@@ -17,6 +17,9 @@ kmlMaker <- function(kmlExportData=plotData,
                      fileName="exportedkml",
                      exportDir=getwd(),
                      layerName="ModelOutput"){
+
+if(!dir.exists(exportDir)) dir.create(exportDir,recursive=TRUE)
+
   kmlExportData[, !names(kmlExportData) %in% c("Longitude","Latitude")] <-
     kmlExportData[, !names(kmlExportData) %in% c("Longitude","Latitude")] %>%
     dplyr::mutate_if(is.numeric,round,3)
@@ -25,7 +28,8 @@ kmlMaker <- function(kmlExportData=plotData,
 
 
   if(file.exists(file.path(exportDir,paste0(fileName,".kml")))){
-    fileName <- paste0(fileName,"_",now())
+    timeNow <- format(Sys.time(),"%Y-%m-%d_%H%M")
+    fileName <- paste0(fileName,"_",timeNow)
   }
 
   suppressWarnings(

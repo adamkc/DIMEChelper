@@ -5,7 +5,9 @@
 #' @param fileName Output file name.  Be sure to add .csv to end.
 #' @param flightName Name of flight to summarize
 #' @param summariseKMLs Logical. If true, calls kmlCompiler to produce summary
-#'  kmls
+#' kmls
+#' @param positiveClasses Vector of class labels that are considered positive
+#' hits
 #'
 #' @return fileName.csv This file summarises the predictions at each tile for an
 #' entire flight. The file contains several metrics of determining a "positive"
@@ -25,7 +27,9 @@ flightMetricTally <- function(homeDir= getwd(),
                               modelName="M14",
                               flightName,
                               fileName = NULL,
-                              summariseKMLs=FALSE){
+                              summariseKMLs=FALSE,
+                              positiveClasses = c("TrespassPlants",
+                                                  "TrespassHoles")){
   ##Create outputDir:
   outputDir <- file.path(homeDir, "Model Output Summary",
                        flightName, modelName)
@@ -42,12 +46,15 @@ flightMetricTally <- function(homeDir= getwd(),
   dataFrameGenerator <- function(x) {
     temp <- read.csv(x)
     nclasses <- which(names(temp) == "Image")-1
-    temp$evidenceRatio <- temp$TrespassTotal / apply(temp[,2:nclasses],1,sum)
+if(!"PositiveTotal" %in% names(temp)){
+    temp$PositiveTotal = apply(temp[,which(names(temp) %in% positiveClasses)],
+1,sum)
+}
+    temp$evidenceRatio <- temp$PositiveTotal / apply(temp[,2:nclasses],1,sum)
     totalChips <- nrow(temp)
-    modelPred <- sum((temp$Model_Prediction == "TrespassPlants" |
-                        temp$Model_Prediction == "TrespassHoles"))
-    threshold0.2 <- sum((temp$TrespassPlants >0.2 | temp$TrespassHoles > 0.2))
-    threshold0.4 <- sum((temp$TrespassPlants >0.5 | temp$TrespassHoles > 0.5))
+    modelPred <- sum((temp$Model_Prediction %in% positiveClasses))
+    threshold0.2 <- sum(temp[,positiveClasses] >0.2)
+    threshold0.4 <- sum(temp[,positiveClasses] >0.5)
     thresholdEvidence0.5 <- sum((temp$evidenceRatio > 0.5))
     thresholdEvidence0.7 <- sum((temp$evidenceRatio > 0.7))
     ##peel off "plotData.csv" and modelDir and then grab the Tile dir name
@@ -68,8 +75,12 @@ flightMetricTally <- function(homeDir= getwd(),
             row.names = FALSE)
   if(summariseKMLs){
     print("Collecting KMLs:")
-    kmlCompiler(homeDir = homeDir, flightName=flightName, modelName=modelName,
-                copyKMLs = FALSE, mergeKMLs = TRUE)
+    kmlCompiler(homeDir = homeDir,
+                flightName=flightName,
+                modelName=modelName,
+                copyKMLs = FALSE,
+                mergeKMLs = TRUE,
+                positiveClasses = positiveClasses)
   }
 }
 

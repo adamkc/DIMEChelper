@@ -4,8 +4,9 @@
 \alias{singleClassGrabber}
 \title{Single Class Grabber}
 \usage{
-singleClassGrabber(homeDir = getwd(), flightName, modelName = "M7",
-  class = "PrivateGrow", filterRate = 0, fileLabel = "Region")
+singleClassGrabber(homeDir = getwd(), flightName,
+  modelName = modelLabel, class = "PrivateGrow", filterRate = 0,
+  fileLabel = "Region")
 }
 \arguments{
 \item{homeDir}{Base Directory. Should have Model Output and Model Output

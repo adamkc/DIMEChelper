@@ -5,7 +5,8 @@
 \title{KML Compiler}
 \usage{
 kmlCompiler(homeDir = getwd(), flightName, modelName, copyKMLs = TRUE,
-  mergeKMLs = FALSE)
+  mergeKMLs = FALSE, positiveClasses = c("TrespassHoles",
+  "TrespassPlants"))
 }
 \arguments{
 \item{homeDir}{Base directory. Should contain "Model Output" folder and
@@ -19,7 +20,8 @@ kmlCompiler(homeDir = getwd(), flightName, modelName, copyKMLs = TRUE,
 directory?}
 
 \item{mergeKMLs}{Logical. Should function merge output kmls into one file for
-easier sharing?}
+easier sharing?
+@param positiveClasses Vector of class labels considered positive hits.}
 }
 \value{
 copyKMLs. Creates multiple directories at the given export dir and

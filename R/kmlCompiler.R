@@ -8,6 +8,7 @@
 #' directory?
 #' @param mergeKMLs Logical. Should function merge output kmls into one file for
 #'  easier sharing?
+#'  @param positiveClasses Vector of class labels considered positive hits.
 #'
 #' @return copyKMLs. Creates multiple directories at the given export dir and
 #' populates them with all the exported kmls from the given flight directory.
@@ -42,7 +43,7 @@ kmlCompiler <- function(homeDir = getwd(),
                             c("KMLs Full",
                               "KMLs Threshold",
                               "KMLs Predicted"))
-    dir.create(exportDirs, showWarnings = FALSE)
+    sapply(X = exportDirs, dir.create, showWarnings = FALSE)
     ## kml list:
     kmls <- list.files(file.path(homeDir,"Model Output",flightName),
                        recursive=TRUE,

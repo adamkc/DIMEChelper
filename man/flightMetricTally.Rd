@@ -5,7 +5,8 @@
 \title{Flight Metric Tally}
 \usage{
 flightMetricTally(homeDir = getwd(), modelName = "M14", flightName,
-  fileName = "MetricTally.csv", summariseKMLs = FALSE)
+  fileName = NULL, summariseKMLs = FALSE,
+  positiveClasses = c("TrespassPlants", "TrespassHoles"))
 }
 \arguments{
 \item{homeDir}{Base Directory. Should have Model Output Directory.}
@@ -18,6 +19,9 @@ flightMetricTally(homeDir = getwd(), modelName = "M14", flightName,
 
 \item{summariseKMLs}{Logical. If true, calls kmlCompiler to produce summary
 kmls}
+
+\item{positiveClasses}{Vector of class labels that are considered positive
+hits}
 }
 \value{
 fileName.csv This file summarises the predictions at each tile for an

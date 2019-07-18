@@ -6,7 +6,8 @@
 \usage{
 tileLevelClassifier(tileName, homeDir = getwd(), chipsName = "Chips",
   flightName, modelName, exportResults = TRUE, returnPlotData = FALSE,
-  classes = classNames)
+  classes = classNames, positiveClasses = c("TrespassPlants",
+  "TrespassHoles"), filterThreshold = 0.2)
 }
 \arguments{
 \item{tileName}{Name of tile to classify}
@@ -36,13 +37,18 @@ Important: Requires a model loaded into the environment called "model".
 \dontrun{
 
 modelLabel <- "M17"
-model <- keras::load_model_hdf5(file.path("F:/Adam Cummings/DimecV1/Model Files", modelLabel, paste0("ModelFile-",modelLabel,".h5")))
-classNames <- read.table(file.path("F:/Adam Cummings/DimecV1/Model Files",modelName, "classes.txt"))[,1]
+modelDir <- file.path("Model Files",
+                       modelLabel,
+                       paste0("ModelFile-",modelLabel,".h5"))
+model <- keras::load_model_hdf5(file.path(modelDir,
+                                     paste0("ModelFile-",modelLabel,".h5")))
+classNames <- read.table(file.path(modelDir, "classes.txt"))[,1]
 
 
-###### Dos Rios Flight
+## Dos Rios Flight
 setwd("F:/Adam Cummings/GoogleImagery/FirstPurchase/")
-dirList <- list.dirs("Chips/ca_dosrios_20170813",recursive = FALSE,full.names=FALSE) ##160 directories
+dirList <- list.dirs("Chips/ca_dosrios_20170813",recursive = FALSE,
+full.names=FALSE) ##160 directories
 tileLevelClassifier(flightName = "ca_dosrios_20170813",
                      tileName = "C15_R01-DosRios2016",
                       modelName=modelLabel,
@@ -50,6 +56,16 @@ tileLevelClassifier(flightName = "ca_dosrios_20170813",
                       returnPlotData = FALSE,
                       classes=classNames)
 
+##Use flightLevelClassifier to classify many tiles at once:
+
+flightLevelClassifier(dirList,
+       flightName = "ca_dosrios_20170813",
+       modelName=modelLabel,
+       exportResults = TRUE,
+       returnPlotData = FALSE,
+       classes=classNames)
+
+## This also works:
 sapply(dirList,tileLevelClassifier,
        flightName = "ca_dosrios_20170813",
        modelName=modelLabel,

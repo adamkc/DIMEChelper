@@ -4,27 +4,25 @@
 \alias{flightLevelClassifier}
 \title{Flight Level Classifier.}
 \usage{
-flightLevelClassifier(flightDir = dirList[1], modelName = modelLabel,
-  exportResults = TRUE, returnPlotData = FALSE, classes = classNames)
+flightLevelClassifier(homeDir = getwd(), flightName, modelName, classes,
+  positiveClasses = c("TrespassPlants", "TrespassHoles"),
+  filterThreshold = 0.2)
 }
 \arguments{
-\item{flightDir}{Directory of the chips to classify}
+\item{homeDir}{Base directory.  Should have "Chips" folder.}
 
-\item{modelName}{Model version to import for classification}
+\item{flightName}{Name of flight to be classified.}
 
-\item{exportResults}{Logical of whether you want the export the classificaiton results to the "Model Output" directory}
+\item{modelName}{Name of loaded model for labeling.}
 
-\item{returnPlotData}{Logical of whether you want to return the plotData classification data.}
-
-\item{classes}{Vector of class names.}
+\item{classes}{vector of classes for model}
 }
 \value{
-Returns either a data.frame of classifications, or outputs it to a plotData.csv, and two kml files, or both. Outputs to "getwd()/Model Output".
 
-DirectoryofResults Optionally exports the results as a set of files in directories, including positive images, kml's of positives, and the full model results
 }
 \description{
-Flight Level Classifier.
+Iterates classification over a flight directory after giving computation
+time.
 }
 \examples{
 \dontrun{

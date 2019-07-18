@@ -35,7 +35,7 @@ singleClassGrabber <- function(homeDir = getwd(),
   csvList <- csvList[grep(csvList,pattern = modelName)]
   classList <- pbapply::pblapply(X = csvList,function(x) {
     temp <- read.csv(x)
-    temp <- temp %>% subset(Model_Prediction == class)
+    temp <- subset(temp, Model_Prediction == class)
     filteredRows <- temp[,class]> filterRate
     temp <- temp[filteredRows,]
     temp
@@ -47,7 +47,7 @@ singleClassGrabber <- function(homeDir = getwd(),
                     gsub(pattern = "\\.",
                          replacement = "_",filterRate))
   kmlMaker(kmlExportData = classList2,
-           filename = fileName,
+           fileName = fileName,
            exportDir = outputDir,
            layerName = class)
 

@@ -5,4 +5,7 @@
 .Ruserdata
 .Rproj
 GCP_BatchDownloader.R
+/creds
 inst/doc
+Aerial-USForestService-3cf5c1b13660.json
+.httr-oauth

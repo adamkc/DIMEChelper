@@ -80,6 +80,9 @@ retile <- function(imageName,
                   proj4string = raster::crs(image))
     wgs.xy <- sp::spTransform(xy,CRSobj = sp::CRS("+init=epsg:4326"))
 
+  } else {
+    wgs.xy <- sp::SpatialPoints(coords = data.frame(t(image@bbox)),
+                            proj4string = raster::crs(image))
   }
   rm(image)
 
