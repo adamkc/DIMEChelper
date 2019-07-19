@@ -61,13 +61,16 @@ tileLevelClassifier <- function(tileName,
                                 homeDir = getwd(),
                                 chipsName = "Chips",
                                 flightName,
-                                modelName,
+                                modelObj,
                                 exportResults=TRUE,
                                 returnPlotData=FALSE,
-                                classes=classNames,
-                                positiveClasses = c("TrespassPlants",
-                                                    "TrespassHoles"),
                                 filterThreshold = 0.2){
+  if(reticulate::py_is_null_xptr(modelObj)){
+    reloadDIMECModel(modelObj)
+  }
+  modelName <- modelObj$modelLabel
+  classes <-  modelObj$classNames
+  positiveClasses <- modelObj$postitiveClasses
 
   outputDir <- file.path(homeDir,"Model Output",flightName,tileName,modelName)
   flightDir <- file.path(homeDir,chipsName,flightName,tileName)
@@ -95,7 +98,7 @@ tileLevelClassifier <- function(tileName,
     shuffle = FALSE,
     seed = 123)
 
-  preds <- keras::predict_generator(model,
+  preds <- keras::predict_generator(modelObj$modelPtr,
                                     test_generator,
                                     verbose = 1,
                                     steps = testSamples,

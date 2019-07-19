@@ -4,10 +4,8 @@
 #' time.
 #'
 #' @param homeDir  Base directory.  Should have "Chips" folder.
+#' @param modelObj A DIMEC model object.
 #' @param flightName Name of flight to be classified.
-#' @param modelName Name of loaded model for labeling.
-#' @param classes vector of classes for model
-#' @param positiveClasses vector of positive classes for scoring positive hits.
 #' @param filterThreshold Adjustable threshold for classifying a positive hit.
 #' @param assessFlightSize Spend a couple minutes getting a precise time estimate?
 #'
@@ -22,13 +20,12 @@
 
 
 flightLevelClassifier <- function(homeDir = getwd(),
+                                  modelObj,
                                   flightName,
-                                  modelName,
-                                  classes,
-                                  positiveClasses = c("TrespassPlants",
-                                                      "TrespassHoles"),
                                   filterThreshold = 0.2,
                                   assessFlightSize = TRUE){
+
+
   tileList <- list.dirs(file.path(homeDir,"Chips",flightName),
                         recursive=FALSE,full.names = TRUE)
 
@@ -67,9 +64,7 @@ flightLevelClassifier <- function(homeDir = getwd(),
     tileLevelClassifier(tileName   = x,
                         homeDir = homeDir,
                         flightName = flightName,
-                        modelName  = modelName,
-                        classes    = classes,
-                        positiveClasses = positiveClasses,
+                        modelObj  = modelObj,
                         filterThreshold = filterThreshold)
   })
 

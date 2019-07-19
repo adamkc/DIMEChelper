@@ -6,8 +6,10 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' directory <- "F:/Adam Cummings/DimecV1/Model Files/M17"
 #' modM17 <- loadDIMECModel(directory)
+#' }
 
 
 loadDIMECModel <- function(directory){

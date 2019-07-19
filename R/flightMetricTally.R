@@ -1,7 +1,7 @@
 #' Flight Metric Tally
 #'
 #' @param homeDir Base Directory. Should have Model Output Directory.
-#' @param modelName DIMEC Model version to extract
+#' @param modelObj A DIMEC Model object.
 #' @param fileName Output file name.  Be sure to add .csv to end.
 #' @param flightName Name of flight to summarize
 #' @param summariseKMLs Logical. If true, calls kmlCompiler to produce summary
@@ -24,22 +24,21 @@
 #'
 #' @export
 flightMetricTally <- function(homeDir= getwd(),
-                              modelName="M14",
+                              modelObj,
                               flightName,
                               fileName = NULL,
-                              summariseKMLs=FALSE,
-                              positiveClasses = c("TrespassPlants",
-                                                  "TrespassHoles")){
+                              summariseKMLs=FALSE){
+  positiveClasses <- modelObj$positiveClasses
   ##Create outputDir:
   outputDir <- file.path(homeDir, "Model Output Summary",
-                       flightName, modelName)
+                       flightName, modelObj$modelLabel)
   dir.create(outputDir, recursive=TRUE, showWarnings = FALSE)
 
-  if(is.null(fileName)) fileName <- paste0("MetricTally-",modelName,".csv")
+  if(is.null(fileName)) fileName <- paste0("MetricTally-",modelObj$modelLabel,".csv")
   ##CSV List:
   csvList <- fs::dir_ls(path = file.path(homeDir,"Model Output",flightName),
                         recursive = TRUE, glob = "*.csv")
-  csvList <- csvList[grep(csvList,pattern = modelName)]
+  csvList <- csvList[grep(csvList,pattern = modelObj$modelLabel)]
 
   ##This function reads the plotData csvs and summarises each one using a
   ##number of different thresholds
@@ -77,7 +76,7 @@ if(!"PositiveTotal" %in% names(temp)){
     print("Collecting KMLs:")
     kmlCompiler(homeDir = homeDir,
                 flightName=flightName,
-                modelName=modelName,
+                modelName=modelObj$modelLabel,
                 copyKMLs = FALSE,
                 mergeKMLs = TRUE,
                 positiveClasses = positiveClasses)

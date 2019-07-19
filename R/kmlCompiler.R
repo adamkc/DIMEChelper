@@ -3,12 +3,11 @@
 #' @param homeDir Base directory. Should contain "Model Output" folder and
 #'  "Model Summary Output" folder
 #' @param flightName Name of flight to summarize
-#' @param modelName Name of Model file output to summarize
+#' @param modelObj A DIMEC model object.
 #' @param copyKMLs Logical. Should function collect all kml outputs from flight
 #' directory?
 #' @param mergeKMLs Logical. Should function merge output kmls into one file for
 #'  easier sharing?
-#'  @param positiveClasses Vector of class labels considered positive hits.
 #'
 #' @return copyKMLs. Creates multiple directories at the given export dir and
 #' populates them with all the exported kmls from the given flight directory.
@@ -23,17 +22,17 @@
 #' \dontrun{
 #'
 #' kmlCompiler(flightName = "ca_hayfork_20160529_rgb"
-#'             modelName = "M17")
+#'             modelObj = Mod17)
 #' }
 #' @export
 kmlCompiler <- function(homeDir = getwd(),
                         flightName,
+                        modelObj,
                         modelName,
                         copyKMLs = TRUE,
-                        mergeKMLs = FALSE,
-                        positiveClasses=c("TrespassHoles","TrespassPlants")){
+                        mergeKMLs = FALSE){
   ## Create Directory:
-  exportDir <- file.path(homeDir,"Model Output Summary", flightName, modelName)
+  exportDir <- file.path(homeDir,"Model Output Summary", flightName, modelObj$modelLabel)
   dir.create(exportDir, showWarnings = FALSE)
 
   ##Copy all kml's exported from flight?:
@@ -47,7 +46,7 @@ kmlCompiler <- function(homeDir = getwd(),
     ## kml list:
     kmls <- list.files(file.path(homeDir,"Model Output",flightName),
                        recursive=TRUE,
-                       pattern=paste0(modelName,".kml"),
+                       pattern=paste0(modelObj$modelLabel,".kml"),
                        full.names=TRUE)
     kmlsFull <- kmls[grep(pattern = "FULL",x = kmls)]
     kmlsTopThresh <- kmls[-c(grep(pattern = "FULL",x = kmls),
@@ -67,7 +66,7 @@ kmlCompiler <- function(homeDir = getwd(),
                           recursive=TRUE,
                           pattern="plotData.csv",
                           full.names=TRUE)
-    rawDataLocs <- rawDataLocs[grep(pattern=modelName,x = rawDataLocs)]
+    rawDataLocs <- rawDataLocs[grep(pattern=modelObj$modelLabel,x = rawDataLocs)]
 
     plotDataTop <- list()
     plotDataPred <- list()
@@ -79,7 +78,7 @@ kmlCompiler <- function(homeDir = getwd(),
       for(i in seq_along(rawDataLocs)){
         temp <- read.csv(rawDataLocs[i])
         plotDataTop[[i]] <<- temp[temp$PositiveTotal > 0.2,]
-        plotDataPred[[i]] <<-temp[temp$Model_Prediction %in% positiveClasses, ]
+        plotDataPred[[i]] <<-temp[temp$Model_Prediction %in% modelObj$modelObj, ]
         pbapply::setpb(pb, i)
       }
 
