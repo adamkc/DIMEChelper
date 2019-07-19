@@ -22,8 +22,8 @@ flightGridKML <- function(rasterDir){
   crs <- raster::crs(x)
 
   for(i in 2:length(rasterList)){
-    xtemp <- raster(rasterList[i])
-    etemp <- extent(xtemp)
+    xtemp <- raster::raster(rasterList[i])
+    etemp <- raster::extent(xtemp)
     ptemp <- as(etemp, 'SpatialPolygons')
     p <<- bind(p,ptemp)
   }
@@ -35,5 +35,8 @@ flightGridKML <- function(rasterDir){
 
   sp::proj4string(p.df) <- crs
   p.df.wgs <- sp::spTransform(p.df,CRSobj = sp::CRS("+init=epsg:4326"))
-  rgdal::writeOGR(p.df.wgs,"flightgrid2.kml",layer="grid",driver="KML")
+  exportDir <- file.path(dirname(rasterDir),
+                         paste0(basename(rasterDir),
+                               "_grid.kml"))
+  rgdal::writeOGR(p.df.wgs,exportDir,layer="grid",driver="KML")
 }
