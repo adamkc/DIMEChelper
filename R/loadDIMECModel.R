@@ -13,12 +13,15 @@
 
 
 loadDIMECModel <- function(directory){
-  classNames <- read.table(file.path(directory, "classes.txt"))[,1]
-  positiveClasses <- read.table(file.path(directory, "PositiveClasses.txt"))[,1]
+  classNames <- read.table(file.path(directory, "classes.txt"))[,1] %>%
+    as.character()
+  positiveClasses <- read.table(file.path(directory,
+                                          "PositiveClasses.txt"))[,1]  %>%
+    as.character()
   modelLabel <- basename(directory)
   modelLocation <- list.files(directory,pattern = ".h5",full.names = TRUE)
   modelPtr <- keras::load_model_hdf5(modelLocation)
-  if((reticulate::py_is_null_xptr(model))){
+  if((reticulate::py_is_null_xptr(modelPtr))){
     message("Model load may have failed")
   }
 
@@ -48,6 +51,6 @@ loadDIMECModel <- function(directory){
 
 
 reloadDIMECModel <- function(DIMECModel){
-  DIMECModel$modelPtr <- keras::load_model_hdf5(modelLocation)
+  DIMECModel$modelPtr <- keras::load_model_hdf5(DIMECModel$modelLocation)
   return(DIMECModel)
 }

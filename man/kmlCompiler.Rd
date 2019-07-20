@@ -4,9 +4,8 @@
 \alias{kmlCompiler}
 \title{KML Compiler}
 \usage{
-kmlCompiler(homeDir = getwd(), flightName, modelName, copyKMLs = TRUE,
-  mergeKMLs = FALSE, positiveClasses = c("TrespassHoles",
-  "TrespassPlants"))
+kmlCompiler(homeDir = getwd(), flightName, modelObj, modelName,
+  copyKMLs = TRUE, mergeKMLs = FALSE)
 }
 \arguments{
 \item{homeDir}{Base directory. Should contain "Model Output" folder and
@@ -14,14 +13,13 @@ kmlCompiler(homeDir = getwd(), flightName, modelName, copyKMLs = TRUE,
 
 \item{flightName}{Name of flight to summarize}
 
-\item{modelName}{Name of Model file output to summarize}
+\item{modelObj}{A DIMEC model object.}
 
 \item{copyKMLs}{Logical. Should function collect all kml outputs from flight
 directory?}
 
 \item{mergeKMLs}{Logical. Should function merge output kmls into one file for
-easier sharing?
-@param positiveClasses Vector of class labels considered positive hits.}
+easier sharing?}
 }
 \value{
 copyKMLs. Creates multiple directories at the given export dir and
@@ -40,6 +38,6 @@ KML Compiler
 \dontrun{
 
 kmlCompiler(flightName = "ca_hayfork_20160529_rgb"
-            modelName = "M17")
+            modelObj = Mod17)
 }
 }

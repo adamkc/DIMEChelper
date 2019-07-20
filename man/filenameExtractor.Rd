@@ -12,7 +12,7 @@ values from. Similar to this:
   purchase1: or_goldbeach_20160703--Set2_-123.521_41.94.jpg
   purchase2: "C01_R01-Hayfork2016_41.1684_-123.5119.jpg"
   I flipped lat and long so they can be pasted into google earth easily
-   but nowtwo different extraction codes are necessary..}
+   but now two different extraction codes are necessary..}
 }
 \value{
 Returns a dataframe that has three columns: Name, Longitude, Latitude

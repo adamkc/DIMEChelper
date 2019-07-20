@@ -31,7 +31,7 @@ if(length(topImages > 0)){
              recursive = TRUE,showWarnings = FALSE)
   file.copy(file.path(homeDir,"Chips",flightName,
                       tileName,"Unclassified",topImages),
-            file.path(exportDir,flightName,tileName,modelName,class))
+            file.path(homeDir,exportDir,flightName,tileName,modelName,class))
 } else{
   return(paste0("No ", class, " predictions meet threshold of ",threshold, "."))
 }

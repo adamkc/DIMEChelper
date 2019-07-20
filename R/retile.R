@@ -75,7 +75,8 @@ retile <- function(imageName,
 
 
   ##Reproject Start Point
-  if(!raster::compareCRS(image,raster::crs("+init=epsg:4326"))){
+  if(!raster::compareCRS(image,raster::crs("+init=epsg:4326")) &
+     !is.na(raster::crs(image))){
     xy <- sp::SpatialPoints(coords = data.frame(t(image@bbox)),
                   proj4string = raster::crs(image))
     wgs.xy <- sp::spTransform(xy,CRSobj = sp::CRS("+init=epsg:4326"))

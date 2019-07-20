@@ -1,14 +1,15 @@
 #' Tile Level Classifier.
 #'
-#' Important: Requires a model loaded into the environment called "model".
+#' The Images should be in this folder: file.path(homeDir,chipsName,flightName,tileName,Unclassified)
 #'
 #' @param homeDir Base Directory.  Needs "Chips" folder.
 #' @param flightName Name of flight to classify
 #' @param tileName Name of tile to classify
-#' @param modelName Model version to use in classification and labeling.
 #' @param exportResults Logical.  Option to export results for later analysis
+#' @param chipsName Folder name of the chips
+#' @param modelObj A DIMEC model object.
+#' @param filterThreshold
 #' @param returnPlotData Logical. Option to return plotData from function.
-#' @param classes Vector of class labels.
 #'
 #' @return Returns either a data.frame of classifications, or outputs it to a
 #'  plotData.csv, and two kml files, or both. Outputs to "getwd()/Model Output".
@@ -57,20 +58,22 @@
 #'}
 #'
 #' @export
-tileLevelClassifier <- function(tileName,
-                                homeDir = getwd(),
+tileLevelClassifier <- function(homeDir = getwd(),
                                 chipsName = "Chips",
                                 flightName,
+                                tileName,
                                 modelObj,
                                 exportResults=TRUE,
                                 returnPlotData=FALSE,
                                 filterThreshold = 0.2){
-  if(reticulate::py_is_null_xptr(modelObj)){
-    reloadDIMECModel(modelObj)
+  if(reticulate::py_is_null_xptr(modelObj$modelPtr)){
+    message("Reloading Model")
+    modelObj <- reloadDIMECModel(modelObj)
   }
+
   modelName <- modelObj$modelLabel
   classes <-  modelObj$classNames
-  positiveClasses <- modelObj$postitiveClasses
+  positiveClasses <- as.character(modelObj$positiveClasses)
 
   outputDir <- file.path(homeDir,"Model Output",flightName,tileName,modelName)
   flightDir <- file.path(homeDir,chipsName,flightName,tileName)
@@ -134,7 +137,9 @@ tileLevelClassifier <- function(tileName,
 
     }
     sapply(positiveClasses,function(x) {
-      topImageExporter(plotData,class = x,
+      topImageExporter(plotData,
+                       homeDir = homeDir,
+                       class = x,
                        flightName=flightName,
                        tileName = tileName,
                        modelName = modelName,

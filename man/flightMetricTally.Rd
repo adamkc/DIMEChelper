@@ -4,14 +4,13 @@
 \alias{flightMetricTally}
 \title{Flight Metric Tally}
 \usage{
-flightMetricTally(homeDir = getwd(), modelName = "M14", flightName,
-  fileName = NULL, summariseKMLs = FALSE,
-  positiveClasses = c("TrespassPlants", "TrespassHoles"))
+flightMetricTally(homeDir = getwd(), modelObj, flightName,
+  fileName = NULL, summariseKMLs = FALSE)
 }
 \arguments{
 \item{homeDir}{Base Directory. Should have Model Output Directory.}
 
-\item{modelName}{DIMEC Model version to extract}
+\item{modelObj}{A DIMEC Model object.}
 
 \item{flightName}{Name of flight to summarize}
 

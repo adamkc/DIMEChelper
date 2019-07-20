@@ -4,18 +4,19 @@
 \alias{flightLevelClassifier}
 \title{Flight Level Classifier.}
 \usage{
-flightLevelClassifier(homeDir = getwd(), flightName, modelName, classes,
-  positiveClasses = c("TrespassPlants", "TrespassHoles"),
-  filterThreshold = 0.2)
+flightLevelClassifier(homeDir = getwd(), modelObj, flightName,
+  filterThreshold = 0.2, assessFlightSize = TRUE)
 }
 \arguments{
 \item{homeDir}{Base directory.  Should have "Chips" folder.}
 
+\item{modelObj}{A DIMEC model object.}
+
 \item{flightName}{Name of flight to be classified.}
 
-\item{modelName}{Name of loaded model for labeling.}
+\item{filterThreshold}{Adjustable threshold for classifying a positive hit.}
 
-\item{classes}{vector of classes for model}
+\item{assessFlightSize}{Spend a couple minutes getting a precise time estimate?}
 }
 \value{
 

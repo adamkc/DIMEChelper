@@ -4,25 +4,24 @@
 \alias{tileLevelClassifier}
 \title{Tile Level Classifier.}
 \usage{
-tileLevelClassifier(tileName, homeDir = getwd(), chipsName = "Chips",
-  flightName, modelName, exportResults = TRUE, returnPlotData = FALSE,
-  classes = classNames, positiveClasses = c("TrespassPlants",
-  "TrespassHoles"), filterThreshold = 0.2)
+tileLevelClassifier(homeDir = getwd(), chipsName = "Chips", flightName,
+  tileName, modelObj, exportResults = TRUE, returnPlotData = FALSE,
+  filterThreshold = 0.2)
 }
 \arguments{
-\item{tileName}{Name of tile to classify}
-
 \item{homeDir}{Base Directory.  Needs "Chips" folder.}
+
+\item{chipsName}{Folder name of the chips}
 
 \item{flightName}{Name of flight to classify}
 
-\item{modelName}{Model version to use in classification and labeling.}
+\item{tileName}{Name of tile to classify}
+
+\item{modelObj}{A DIMEC model object.}
 
 \item{exportResults}{Logical.  Option to export results for later analysis}
 
 \item{returnPlotData}{Logical. Option to return plotData from function.}
-
-\item{classes}{Vector of class labels.}
 }
 \value{
 Returns either a data.frame of classifications, or outputs it to a
@@ -31,7 +30,7 @@ Returns either a data.frame of classifications, or outputs it to a
   positive images, kml's of positives, and the full model results
 }
 \description{
-Important: Requires a model loaded into the environment called "model".
+The Images should be in this folder: file.path(homeDir,chipsName,flightName,tileName,Unclassified)
 }
 \examples{
 \dontrun{
