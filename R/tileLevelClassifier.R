@@ -88,7 +88,7 @@ tileLevelClassifier <- function(homeDir = getwd(),
 
   print(file.path(flightName,tileName))
 
-  filesToClassifyLoc <- fs::dir_ls(flightDir,recursive = TRUE,glob = "*.jpg")
+  filesToClassifyLoc <- fs::dir_ls(flightDir,recursive = TRUE,type = "file")
   filesToClassify <- basename(filesToClassifyLoc)
   testSamples <- length(filesToClassify)
 
