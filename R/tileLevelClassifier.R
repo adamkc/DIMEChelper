@@ -92,7 +92,7 @@ tileLevelClassifier <- function(homeDir = getwd(),
                                    recurse = TRUE,
                                    type = "file",all=FALSE)
   #Remove Thumbnail database hidden files:
-  filesToClassifyLoc <- filestoClassifyLoc[-grepl(pattern = "thumb",x = filesToClassifyLoc)]
+  filesToClassifyLoc <- filesToClassifyLoc[-grepl(pattern = "thumb",x = filesToClassifyLoc)]
 
   filesToClassify <- basename(filesToClassifyLoc)
   testSamples <- length(filesToClassify)
