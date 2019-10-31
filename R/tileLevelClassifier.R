@@ -88,7 +88,12 @@ tileLevelClassifier <- function(homeDir = getwd(),
 
   print(file.path(flightName,tileName))
 
-  filesToClassifyLoc <- fs::dir_ls(flightDir,recursive = TRUE,type = "file")
+  filesToClassifyLoc <- fs::dir_ls(flightDir,
+                                   recurse = TRUE,
+                                   type = "file",all=FALSE)
+  #Remove Thumbnail database hidden files:
+  filesToClassifyLoc <- filestoClassifyLoc[-grepl(pattern = "thumb",x = filesToClassifyLoc)]
+
   filesToClassify <- basename(filesToClassifyLoc)
   testSamples <- length(filesToClassify)
 
