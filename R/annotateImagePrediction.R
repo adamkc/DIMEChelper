@@ -14,17 +14,27 @@ annotateImagePrediction <- function(plotDataOne=plotData[1,],
                                     classes = classNames,
                                     outputDir=file.path(outputDir,
                                                         "PositiveImages")){
-  if(!dir.exists(outputDir)) dir.create(outputDir)
-  img <- jpeg::readJPEG(file.path(imageDir,plotDataOne$Image))
+  if(!dir.exists(outputDir)) dir.create(outputDir,recursive = TRUE)
+  if(file.exists(file.path(imageDir,plotDataOne$Image))){
+    imageLocation <- file.path(imageDir,plotDataOne$Image)
+  } else {
+    imageLocation <- file.path(imageDir,plotDataOne$Actual_Class,plotDataOne$Image)
+  }
+  if(!file.exists(imageLocation)) return("Error: image not found.")
+  img <- jpeg::readJPEG(imageLocation)
   g <- grid::rasterGrob(img)
-  plot <- plotDataOne %>% tidyr::gather(Var,Val,seq_along(classes)) %>%
-    .[order(.$Val,decreasing=TRUE),] %>%
+  temp <- plotDataOne %>%
+    tidyr::gather(Var,Val,seq_along(classes)) %>%
+    dplyr::arrange(desc(Val)) %>%
     dplyr::mutate(Val = round(Val,2),
            Var = factor(Var,levels=rev(Var)),
            Trespass = (Var=="TrespassPlants" |
                          Var == "TrespassHoles" |
                          Var == "TrespassBushes")) %>%
-    .[1:3,] %>%
+    head(3)
+
+
+  plot <- temp %>%
     ggplot(aes(x=Var,y=Val)) +
     geom_bar(stat="identity",aes(fill=Trespass)) +
     geom_text(aes(label=Var,y=0.05),hjust="left",size=2.5) +
