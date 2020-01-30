@@ -28,7 +28,6 @@
 kmlCompiler <- function(homeDir = getwd(),
                         flightName,
                         modelObj,
-                        modelName,
                         copyKMLs = TRUE,
                         mergeKMLs = FALSE){
   ## Create Directory:
@@ -78,7 +77,7 @@ kmlCompiler <- function(homeDir = getwd(),
       for(i in seq_along(rawDataLocs)){
         temp <- read.csv(rawDataLocs[i])
         plotDataTop[[i]] <<- temp[temp$PositiveTotal > 0.2,]
-        plotDataPred[[i]] <<-temp[temp$Model_Prediction %in% modelObj$modelObj, ]
+        plotDataPred[[i]] <<-temp[temp$Model_Prediction %in% modelObj$positiveClasses, ]
         pbapply::setpb(pb, i)
       }
 

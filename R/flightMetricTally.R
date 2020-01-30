@@ -46,8 +46,8 @@ flightMetricTally <- function(homeDir= getwd(),
     temp <- read.csv(x)
     nclasses <- which(names(temp) == "Image")-1
 if(!"PositiveTotal" %in% names(temp)){
-    temp$PositiveTotal = apply(temp[,which(names(temp) %in% positiveClasses)],
-1,sum)
+    temp$PositiveTotal = apply(temp[,which(names(temp)
+                                           %in% positiveClasses)],1,sum)
 }
     temp$evidenceRatio <- temp$PositiveTotal / apply(temp[,2:nclasses],1,sum)
     totalChips <- nrow(temp)
@@ -76,10 +76,9 @@ if(!"PositiveTotal" %in% names(temp)){
     print("Collecting KMLs:")
     kmlCompiler(homeDir = homeDir,
                 flightName=flightName,
-                modelName=modelObj$modelLabel,
+                modelObj=modelObj,
                 copyKMLs = FALSE,
-                mergeKMLs = TRUE,
-                positiveClasses = positiveClasses)
+                mergeKMLs = TRUE)
   }
 }
 

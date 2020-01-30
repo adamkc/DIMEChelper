@@ -10,8 +10,10 @@
 #'
 #' @export
 flightGridKML <- function(rasterDir){
+
   if(!dir.exists(rasterDir))
     stop("Directory doesn't exist")
+
   rasterList <- list.files(rasterDir,full.names=TRUE,pattern="*.tif")
   if(length(rasterList)==0)
     stop(paste0("No rasters (*.tif) found at ", rasterDir))
@@ -21,17 +23,21 @@ flightGridKML <- function(rasterDir){
   p <- as(e,"SpatialPolygons")
   crs <- raster::crs(x)
 
-  for(i in 2:length(rasterList)){
-    xtemp <- raster::raster(rasterList[i])
-    etemp <- raster::extent(xtemp)
-    ptemp <- as(etemp, 'SpatialPolygons')
-    p <<- bind(p,ptemp)
-  }
+  print(sprintf("There are %s rasters in the folder.", length(rasterList)))
+
+  pbapply::pbsapply(rasterList[2:length(rasterList)],
+                    FUN = function(x){
+                      xtemp <- raster::raster(x)
+                      etemp <- raster::extent(xtemp)
+                      ptemp <- as(etemp, 'SpatialPolygons')
+                      p <<- raster::bind(p,ptemp)
+
+  })
 
   boxLabels <- data.frame(TileName =
                             tools::file_path_sans_ext(basename(rasterList)),
                           row.names = seq_along(rasterList))
-  p.df <- SpatialPolygonsDataFrame(p,boxLabels)
+  p.df <- sp::SpatialPolygonsDataFrame(p,boxLabels)
 
   sp::proj4string(p.df) <- crs
   p.df.wgs <- sp::spTransform(p.df,CRSobj = sp::CRS("+init=epsg:4326"))
